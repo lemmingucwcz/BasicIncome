@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mechanics of the simulation</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+</head>
+<body>
+<h1>How does the simulation work</h1>
+
+<h2>Overview</h2>
+
+<p>Generally speaking, each citizen divides its (fixed) amount of time between various activities in such a way that he is most happy (gains most
+    satisfaction). Sounds simple, doesn't it?</p>
+
+<p>The workings of the simulation are shown on the following diagram that I will refer to during explanation:</p>
+
+<img src="img/BasicIncomeFlow.png"/>
+
+<h2>Currencies</h2>
+
+<p>The simulation works with three kinds of "currencies":</p>
+
+<ul>
+    <li><strong>Money:</strong> Just the money. Shown in orange in the diagram.</li>
+    <li><strong>Resources:</strong> Resources needed for living. Food, warmth, housing or more elaborate like art. Simulation currently does not differentate
+        types of resources - everything is just "a resource". Shown in red in the diagram.
+    </li>
+    <li><strong>Satisfaction:</strong> Citizen's (un)happyness. Everyone wants to be happy! Shown in blue.</li>
+</ul>
+
+<h2>Activities</h2>
+
+<p>Activities that citizen can take part in are:</p>
+
+<ul>
+    <li><strong>Legal job:</strong> Citizens go to work, get money, some satisfaction (or dissatisfaction, if they don't like to work). Oh, and the money they
+        make in legal job gets taxed by income tax!
+    </li>
+    <li><strong>Illegal job:</strong> Citizens work, but not "officially". So they get money for the work but the money are not taxed. Since it is illegal and
+        they are afraid they will be caught, illegal work generates much more dissatisfaction than legal work.
+    </li>
+    <li><strong>Community work:</strong> Citizens do what they can for their neighbours and their neighbours do the same for them. Upside is that citizen gets
+        directly resources (simulating neighbours returning the favor), so this kind of work is not taxed at all. Downside is that it is less effective and
+        effectivity drops quickly since community is limited. Also generates some (dis)satisfaction.
+    </li>
+    <li><strong>Household work:</strong> Citizens working on their own household. Cleaning, doing some repairs, cooking and so on. Completely tax-free, but
+        there is only limited amount of things you can do on your own, so effectivity drops quickly. Also generates some (dis)satisfaction.
+    </li>
+    <li><strong>Free time:</strong> Free, non-productive time. Generates just satisfaction.</li>
+</ul>
+
+<h2>Converting money and resources to satisfaction</h2>
+
+<p>So by activities, citizens generated some amount of money, resources (and satisfaction). Now we need to convert money and resources to satisfaction:</p>
+
+<ul>
+    <li>With money citizens buy resources. They need to pay Value Added Tax for the resources (*).</li>
+    <li>Each citizen has a "living standard" i.e., amount of resources he is used to. The amount of generated and bought resources is compared to this "living
+        standard" and (dis)satisfaction is generated based on the difference. Also when amount of resources is low so that it does not cover basic needs (food,
+        housing, ...), it generates additional dissatisfaction.
+    </li>
+</ul>
+
+<p>*) So when money are acquired from legal job, they are taxed with income tax and then again with VAT when used to buy resources. When money are acquired from
+    illegal job, they are taxed with just VAT when used to buy resources.</p>
+
+<h2>Budget</h2>
+
+<p>You should have a balanced budget. It is quite simple. The incomes are:</p>
+
+<ul>
+    <li>Income tax</li>
+    <li>Value added tax</li>
+</ul>
+
+<p>Your expenses are:</p>
+
+<ul>
+    <li>"Other" expenses for running the state, specified "per capita" by constant in the simulation.</li>
+    <li>Basic income</li>
+</ul>
+
+<h2>Running the simulation</h2>
+
+<p><strong>Important note: All hours, production and money are scaled to <span style="text-decoration: underline;">weekly</span> values. So when you see "Legal
+    job avg hours", it is per week. When you set "Base income", it is per week. Et cetera!!!</strong></p>
+
+<p>When you start the simulation, following happens:</p>
+
+<ol>
+    <li>Citizen population is randomly generated, each citizen has slightly different properties (effectivity at work, how much he/she likes work, etc.)</li>
+    <li>Basic income is set to zero, taxes are set to initial values.</li>
+    <li>Citizens find optimal allocation of their time to various activities so they get most satisfaction out of it.</li>
+</ol>
+
+<p>Now the simulation round begins</p>
+
+<ol>
+    <li>You have a chance to change simulation parameters - basic income and taxes. You see impacts on your budget as soon as you change the value.</li>
+    <li>When you are done, click the <i>Next step</i> button.</li>
+    <li>Citizens will find optimal allocation of their time for new conditions.</li>
+    <li>Next round begins.</li>
+</ol>
+
+<h2>TODO</h2>
+
+<p>There are several enhancements that are currently on my mind:</p>
+
+<ul>
+    <li><strong>Inflation:</strong> Citizens should be able to buy only as much resources as are generated by dependent and independent jobs.</li>
+    <li><strong>Different resources:</strong> It is, of course, not possible to simulate every type of resource. So I would go only with two types. "Type 1"
+        resource that is more effectively produced in job than in standalone work but is crucial for survival. For example, food. "Type 2" resource, that is
+        can be very effective to produce, even when working alone, but is not essential for living, for example, art.
+    </li>
+    <li><strong>Dependent citizens:</strong> Citizens that are not able to produce enough resources on its own and need to be supported - children or seniors.
+        Social benefit would be introduced, that would be given to those citizens at the start and you could replace that with basic income.
+    </li>
+    <li><strong>Working habits:</strong> When citizens do not work, they gradually lose their working habits meaning they will get more dissatisfaction from
+        work when they consider working again. And vice versa, when they are working, they get used to it and get less dissatisfaction.
+    </li>
+    <li><strong>Aging: </strong> People get less effective, old people die, new citizens "appear" which do no have working habits (get more dissatisfaction from
+        work - see above).
+    </li>
+</ul>
+
+<h2>Internals - density functions</h2>
+
+<p>UI features "Designer" part where you can see different functions that are behind the simulation. Each function has a description so I will not cover them
+    here. I just want to emphase, that except the last two ("Resources difference satisfaction" and "Resources absolute satisfaction") they are constructed as a
+    density functions. So, for example, to determine how much satisfaction you get from working 40 hours a week, you need to sum all values from 1 to 40.</p>
+
+</body>
+</html>

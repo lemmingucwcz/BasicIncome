@@ -159,12 +159,14 @@ var Configuration = React.createClass(
 
             return <div>
                 <div className="hudPart double">
+                    <h2>Variables (applied immediatelly)</h2>
                     {this.renderValue("Other expenses per capita", "STATE_EXPENSES_PER_CAPITA")}
                     {this.renderValue("How quickly citizen accomodates to new amount of resources (0 (not at all) - 1 (immediatelly))", "RESOURCES_NEED_SHIFT")}
                     {this.renderValue("Population size", "POPULATION_SIZE")}
                 </div>
 
                 <div className="hudPart double">
+                    <h2>Load/save configuration</h2>
                     <select size="10" ref="select" onChange={this.configNameChanged}>
                         {
                             Object.keys(ls).map(function (key) {
@@ -173,7 +175,7 @@ var Configuration = React.createClass(
                         }
                     </select><br />
 
-                    <input type="text" value={this.state.configName} style={{"text-align": "left", margin: "5px 10px", width: "465px", "font-size": "120%"}} onChange={this.configNameChanged} /><br />
+                    <input type="text" placeholder="Configuration name" value={this.state.configName} style={{"text-align": "left", margin: "5px 10px", width: "465px", "font-size": "120%"}} onChange={this.configNameChanged} /><br />
 
                     {saveBtn}
                     {loadBtn}

@@ -1,3 +1,158 @@
 body {
     font-size: 120%;
+    color: #fff;
+    background: #000;
+    font-family: sans-serif;
+}
+
+.menu {
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+    padding: 0 40px;
+    margin: 20px 0;
+}
+
+.menu a {
+    font-size: 150%;
+    padding: 10px 20px;
+    display: inline-block;
+    color: white;
+}
+
+.menu a.button {
+    text-decoration: none;
+}
+
+.menu a.button:hover {
+    color: orange;
+}
+
+.menu a.button.active {
+    background: orange;
+    color: white;
+}
+
+.menu a.rightLink {
+    float: right;
+    font-size: 130%;
+    margin-top: 3px;
+}
+
+.content {
+    padding: 0 40px;
+}
+
+.hudPart {
+    float: left;
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 20px;
+}
+
+.hudPart.single {
+    width: 242px;
+}
+
+.hudPart.double {
+    width: 484px;
+}
+
+.hudElm {
+    width: 200px;
+    border: 1px solid white;
+    padding: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    margin: 10px;
+    background: linear-gradient(-150deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, .3) 15%, rgba(255, 255, 255, 0) 50%);
+}
+
+.hudElm.double {
+    width: 442px;
+}
+
+.hudElm .title {
+
+}
+
+.hudElm .value {
+    font-size: 200%;
+    margin-top: 10px;
+    text-align: right;
+}
+
+.hudElm input[type=text] {
+    width: 100%;
+    font-size: 100%;
+    background: #333;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    text-align: right;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+.hudElm input[type=text]:focus {
+    background: #444;
+    border: none;
+}
+
+.hudPart select {
+    width: 444px;
+    font-size: 100%;
+    margin: 10px;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+a.hudElm {
+    margin-top: 13px;
+    background: rgba(255, 165, 0, 0.7);
+    cursor: pointer;
+    font-size: 200%;
+    text-align: center;
+
+}
+
+a.hudElm:hover,a.hudElm:focus  {
+    background: orange;
+}
+
+.description {
+    margin: 10px;
+}
+
+.chart {
+    display: inline-block;
+    padding: 20px;
+}
+
+.document {
+    max-width: 1200px;
+}
+
+.document h1 {
+    padding: 0 40px;
+    border-bottom: 2px solid white;
+}
+
+.document h2 {
+    padding: 0 40px;
+    margin-top: 30px;
+    border-bottom: 1px solid white;
+}
+
+.document p {
+    padding: 0 40px;
+}
+
+.document ul, .document ol {
+    margin: 0 40px;
+}
+
+.document img {
+    border: 20px solid white;
+    margin: 20px 40px;
 }

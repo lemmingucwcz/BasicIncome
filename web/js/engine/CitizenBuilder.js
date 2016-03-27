@@ -11,7 +11,7 @@ var CitizenBuilder = (function() {
         buildCitizen: function() {
             var res = new CitizenState();
 
-            res.resourcesNeeded = 24000/4;
+            res.resourcesNeeded = ConstantsConfig.RESOURCES_NEEDED;
 
             res.legalJob = ActivityBuilder.buildLegalJobActivity();
             res.legalJob.index = 2;

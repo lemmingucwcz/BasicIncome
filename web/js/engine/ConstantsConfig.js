@@ -19,5 +19,10 @@ window.ConstantsConfig = {
     /**
      * Number of citizens
      */
-    POPULATION_SIZE: 1000
+    POPULATION_SIZE: 1000,
+
+    /**
+     * Initial resources needed by one citizen
+     */
+    RESOURCES_NEEDED: 24000/4
 };

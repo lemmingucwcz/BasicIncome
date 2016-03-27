@@ -12,7 +12,8 @@ var Configuration = React.createClass(
                 values: {
                     STATE_EXPENSES_PER_CAPITA: ConstantsConfig.STATE_EXPENSES_PER_CAPITA,
                     RESOURCES_NEED_SHIFT: ConstantsConfig.RESOURCES_NEED_SHIFT,
-                    POPULATION_SIZE: ConstantsConfig.POPULATION_SIZE
+                    POPULATION_SIZE: ConstantsConfig.POPULATION_SIZE,
+                    RESOURCES_NEEDED: ConstantsConfig.RESOURCES_NEEDED
                 },
 
                 configName: "",
@@ -161,6 +162,7 @@ var Configuration = React.createClass(
                 <div className="hudPart double">
                     <h2>Variables (applied immediatelly)</h2>
                     {this.renderValue("Other expenses per capita", "STATE_EXPENSES_PER_CAPITA")}
+                    {this.renderValue("Initial resources needed by one citizen", "RESOURCES_NEEDED")}
                     {this.renderValue("How quickly citizen accomodates to new amount of resources (0 (not at all) - 1 (immediatelly))", "RESOURCES_NEED_SHIFT")}
                     {this.renderValue("Population size", "POPULATION_SIZE")}
                 </div>

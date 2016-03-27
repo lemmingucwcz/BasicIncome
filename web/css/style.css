@@ -82,7 +82,7 @@ body {
     text-align: right;
 }
 
-.hudElm input[type=text] {
+.hudPart input[type=text] {
     width: 100%;
     font-size: 100%;
     background: #333;
@@ -94,13 +94,13 @@ body {
     box-sizing: border-box;
 }
 
-.hudElm input[type=text]:focus {
+.hudPart input[type=text]:focus {
     background: #444;
     border: none;
 }
 
 .hudPart select {
-    width: 444px;
+    width: 465px;
     font-size: 100%;
     margin: 10px;
     padding: 5px;
@@ -116,7 +116,7 @@ a.hudElm {
 
 }
 
-a.hudElm:hover,a.hudElm:focus  {
+a.hudElm:hover {
     background: orange;
 }
 
@@ -127,6 +127,11 @@ a.hudElm:hover,a.hudElm:focus  {
 .chart {
     display: inline-block;
     padding: 20px;
+}
+
+.error {
+    color: red;
+    padding-left: 10px;
 }
 
 .document {
@@ -156,3 +161,4 @@ a.hudElm:hover,a.hudElm:focus  {
     border: 20px solid white;
     margin: 20px 40px;
 }
+

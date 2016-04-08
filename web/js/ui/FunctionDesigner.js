@@ -36,6 +36,36 @@ var FunctionDesigner = React.createClass(
             }
             newState.fn.max = newMax;
 
+            // Parse scale variation
+            if (this.refs.scaleVariation !== undefined) {
+                var newScaleVariation = parseFloat(this.refs.scaleVariation.getDOMNode().value);
+                if (isNaN(newScaleVariation)) {
+                    newState.error = "Invalid scale variation";
+                    return newState;
+                }
+                newState.scaleVariation = newScaleVariation;
+            }
+
+            // Parse offset variation
+            if (this.refs.offsetVariation !== undefined) {
+                var newOffsetVariation = parseFloat(this.refs.offsetVariation.getDOMNode().value);
+                if (isNaN(newOffsetVariation)) {
+                    newState.error = "Invalid offset variation";
+                    return newState;
+                }
+                newState.offsetVariation = newOffsetVariation;
+            }
+
+            // Parse dependent scale variation
+            if (this.refs.dependentScaleRatio !== undefined) {
+                var newDependentScaleRatio = parseFloat(this.refs.dependentScaleRatio.getDOMNode().value);
+                if (isNaN(newDependentScaleRatio)) {
+                    newState.error = "Invalid dependent scale ratio";
+                    return newState;
+                }
+                newState.dependentScaleRatio = newDependentScaleRatio;
+            }
+
             // Parse function
             try {
                 var x = 1;
@@ -77,6 +107,9 @@ var FunctionDesigner = React.createClass(
                     this.refs.min.getDOMNode().value = newState.fn.min;
                     this.refs.max.getDOMNode().value = newState.fn.max;
                     this.refs.fn.getDOMNode().value = newState.fn.fn;
+                    this.refs.scaleVariation.getDOMNode().value = newState.fn.scaleVariation;
+                    this.refs.offsetVariation.getDOMNode().value = newState.fn.offsetVariation;
+                    this.refs.dependentScaleRatio.getDOMNode().value = newState.fn.dependentScaleRatio;
                 }
             }
 
@@ -104,10 +137,34 @@ var FunctionDesigner = React.createClass(
         render: function () {
             var storeButton = <span />;
 
-            if ((this.state.selectedId != null) && (this.state.error.length == 0) && (this.state.fn.fn != this.state.originalFn)) {
+            if ((this.state.selectedId != null) && (this.state.error.length == 0)) {
                 storeButton = <a className="hudElm double" tabIndex="1" onClick={this.store}>
                     Store
                 </a>;
+            }
+
+            var variations = <div></div>;
+
+            if ((this.state.fn !== undefined) && (this.state.fn.scaleVariation !== undefined)) {
+                variations = <div>
+                    <div className="hudElm">
+                        <div className="title">Scale variation</div>
+                        <div className="value"><input tabIndex="1" type="text" ref="scaleVariation"
+                                                      defaultValue={this.state.fn.scaleVariation}/></div>
+                    </div>
+
+                    <div className="hudElm">
+                        <div className="title">Offset variation</div>
+                        <div className="value"><input tabIndex="1" type="text" ref="offsetVariation"
+                                                      defaultValue={this.state.fn.offsetVariation}/></div>
+                    </div>
+
+                    <div className="hudElm double">
+                        <div className="title">Dependent scale ratio</div>
+                        <div className="value"><input tabIndex="1" type="text" ref="dependentScaleRatio"
+                                                      defaultValue={this.state.fn.dependentScaleRatio}/></div>
+                    </div>
+                </div>;
             }
 
             var chartParams = (this.state.selectedId == null) ? <span /> :
@@ -128,13 +185,15 @@ var FunctionDesigner = React.createClass(
 
                                   <div className="hudElm double">
                                       <div className="title">Function</div>
-                                      <div className="value" style={{"font-size": "100%"}}><input style={{"text-align": "left"}} tabIndex="1" type="text" ref="fn"
+                                      <div className="value" style={{"fontSize": "100%"}}><input style={{"textAlign": "left"}} tabIndex="1" type="text" ref="fn"
                                                                     defaultValue={this.state.fn.fn}/></div>
                                   </div>
 
                                   <a className="hudElm double" tabIndex="1" onClick={this.draw}>
                                       Draw
                                   </a>
+
+                                  {variations}
 
                                   {storeButton}
 

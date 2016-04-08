@@ -6,27 +6,31 @@ var CitizenBuilder = (function() {
 
     var CitizenBuilder = {
         /**
+         * @param isDependent Build dependent citizen
+         *
          * @returns {CitizenState} Created citizen
          */
-        buildCitizen: function() {
+        buildCitizen: function(isDependent) {
             var res = new CitizenState();
 
             res.resourcesNeeded = ConstantsConfig.RESOURCES_NEEDED;
 
-            res.legalJob = ActivityBuilder.buildLegalJobActivity();
+            res.legalJob = ActivityBuilder.buildLegalJobActivity(isDependent);
             res.legalJob.index = 2;
 
-            res.illegalJob = ActivityBuilder.buildIllegalJobActivity();
+            res.illegalJob = ActivityBuilder.buildIllegalJobActivity(isDependent);
             res.illegalJob.index = 0;
 
-            res.homeWork = ActivityBuilder.buildHomeWorkActivity();
+            res.homeWork = ActivityBuilder.buildHomeWorkActivity(isDependent);
             res.homeWork.index = 2;
 
-            res.communalWork = ActivityBuilder.buildCommunalWorkActivity();
+            res.communalWork = ActivityBuilder.buildCommunalWorkActivity(isDependent);
             res.communalWork.index = 0;
 
-            res.freeTime = ActivityBuilder.buildFreeTimeActivity();
+            res.freeTime = ActivityBuilder.buildFreeTimeActivity(isDependent);
             res.freeTime.index = 7*16
+
+            res.isDependent = isDependent;
 
             return res;
         }

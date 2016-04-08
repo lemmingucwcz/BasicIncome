@@ -17,5 +17,10 @@ window.UserVariables = {
     /**
      * Value added tax
      */
-    valueAddedTax: 0.20
+    valueAddedTax: 0.20,
+
+    /**
+     * Social benefit for dependent persons
+     */
+    socialBenefit: 7000/4,
 };

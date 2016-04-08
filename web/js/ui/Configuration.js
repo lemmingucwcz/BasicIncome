@@ -13,7 +13,9 @@ var Configuration = React.createClass(
                     STATE_EXPENSES_PER_CAPITA: ConstantsConfig.STATE_EXPENSES_PER_CAPITA,
                     RESOURCES_NEED_SHIFT: ConstantsConfig.RESOURCES_NEED_SHIFT,
                     POPULATION_SIZE: ConstantsConfig.POPULATION_SIZE,
-                    RESOURCES_NEEDED: ConstantsConfig.RESOURCES_NEEDED
+                    RESOURCES_NEEDED: ConstantsConfig.RESOURCES_NEEDED,
+                    DEPENDENT_PERSON_PERCENTAGE: ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE,
+                    MINIMUM_RESOURCES_NEEDED: ConstantsConfig.MINIMUM_RESOURCES_NEEDED
                 },
 
                 configName: "",
@@ -165,6 +167,8 @@ var Configuration = React.createClass(
                     {this.renderValue("Initial resources needed by one citizen", "RESOURCES_NEEDED")}
                     {this.renderValue("How quickly citizen accomodates to new amount of resources (0 (not at all) - 1 (immediatelly))", "RESOURCES_NEED_SHIFT")}
                     {this.renderValue("Population size", "POPULATION_SIZE")}
+                    {this.renderValue("Percentage of dependent persons in population", "DEPENDENT_PERSON_PERCENTAGE")}
+                    {this.renderValue("Minimal resources needed for survival of person (not really a limit, but citizens start to be very disappointed below this line)", "MINIMUM_RESOURCES_NEEDED")}
                 </div>
 
                 <div className="hudPart double">

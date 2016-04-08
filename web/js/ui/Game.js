@@ -14,20 +14,26 @@ var Game = React.createClass(
             var stats = {
                 incomeTaxIncome: 0,
                 vatIncome: 0,
-                baseIncomeExpenses: 0
+                baseIncomeExpenses: 0,
+                socialBenefitsExpenses: 0,
             };
 
             for (var i = 0; i < state.citizens.length; i++) {
                 var citizen = state.citizens[i];
 
                 stats.baseIncomeExpenses += state.baseIncome;
+
+                if (citizen.isDependent) {
+                    stats.socialBenefitsExpenses += state.socialBenefit;
+                }
+
                 stats.incomeTaxIncome += citizen.legalJob.states[citizen.legalJob.index].moneyEarned * state.incomeTax / 100.0;
                 var money = citizen.legalJob.states[citizen.legalJob.index].moneyEarned * (1 - state.incomeTax / 100.0) +
                             citizen.illegalJob.states[citizen.illegalJob.index].moneyEarned;
                 stats.vatIncome += money * state.valueAddedTax / 100.0;
             }
 
-            stats.balance = stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - state.stateExpenses;
+            stats.balance = stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
 
             return stats;
         },
@@ -35,7 +41,9 @@ var Game = React.createClass(
         getInitialState: function () {
             var citizens = [];
             for (var i = 0; i < ConstantsConfig.POPULATION_SIZE; i++) {
-                citizens.push(CitizenBuilder.buildCitizen());
+                var isDependent = Math.random()*100 < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
+
+                citizens.push(CitizenBuilder.buildCitizen(isDependent));
             }
 
             var stats = Optimizer.optimizePopulation(citizens);
@@ -44,6 +52,7 @@ var Game = React.createClass(
                 baseIncome: 0,
                 incomeTax: UserVariables.incomeTax * 100,
                 valueAddedTax: UserVariables.valueAddedTax * 100,
+                socialBenefit: UserVariables.socialBenefit,
                 prevStepStats: stats,
                 nextStepStats: null,
                 citizens: citizens,
@@ -107,6 +116,16 @@ var Game = React.createClass(
             }
         },
 
+        changeSocialBenefit: function (e) {
+            var n = this._convertInteger(e);
+            if (n >= 0) {
+                var state = this.state;
+                state.socialBenefit = n;
+                state.nextStepStats = this._computeStats(state);
+                this.setState(state);
+            }
+        },
+
         nextStep: function () {
             /* Update state */
             var newState = this.state;
@@ -115,6 +134,7 @@ var Game = React.createClass(
             UserVariables.incomeTax = this.state.incomeTax * .01;
             UserVariables.valueAddedTax = this.state.valueAddedTax * .01;
             UserVariables.baseIncome = this.state.baseIncome;
+            UserVariables.socialBenefit = this.state.socialBenefit;
 
             // Optimize population
             newState.prevStepStats = Optimizer.optimizePopulation(newState.citizens);
@@ -196,17 +216,17 @@ var Game = React.createClass(
                         <div className="value">{this._hudFmt(this.state.prevStepStats.freeTime.avg())}</div>
                     </div>
                     <div className="hudElm">
-                        <div className="title">&nbsp;</div>
-                        <div className="value">&nbsp;</div>
+                        <div className="title">Average satisfaction</div>
+                        <div className="value">{Math.round(
+                            this.state.prevStepStats.satisfactionSum / this.state.citizens.length)}</div>
                     </div>
                     <div className="hudElm">
                         <div className="title">Resources fulfillment</div>
                         <div className="value">{Math.round(this.state.prevStepStats.resourcesFulfilled.avg() * 5)}%</div>
                     </div>
                     <div className="hudElm">
-                        <div className="title">Average satisfaction</div>
-                        <div className="value">{Math.round(
-                            this.state.prevStepStats.satisfactionSum / this.state.citizens.length)}</div>
+                        <div className="title">Under-resourced ctzs</div>
+                        <div className="value">{Math.round(this.state.prevStepStats.belowMinimumResourcesPercent)}%</div>
                     </div>
                 </div>;
             }
@@ -231,6 +251,14 @@ var Game = React.createClass(
                         <div className="value">{this._moneyFmt(this.state.stateExpenses)}</div>
                     </div>
                     <div className="hudElm">
+                        <div className="title">Social bnft expenses</div>
+                        <div className="value">{this._moneyFmt(this.state.nextStepStats.socialBenefitsExpenses)}</div>
+                    </div>
+                    <div className="hudElm">
+                        <div className="title">&nbsp;</div>
+                        <div className="value">&nbsp;</div>
+                    </div>
+                    <div className="hudElm">
                         <div className="title">&nbsp;</div>
                         <div className="value">&nbsp;</div>
                     </div>
@@ -244,6 +272,11 @@ var Game = React.createClass(
             return <div>
                 {prevStepStats}
                 <div className="hudPart single">
+                    <div className="hudElm">
+                        <div className="title">Social benefit</div>
+                        <div className="value"><input tabIndex="1" type="text" value={this.state.socialBenefit}
+                                                      onChange={this.changeSocialBenefit}/></div>
+                    </div>
                     <div className="hudElm">
                         <div className="title">Base income</div>
                         <div className="value"><input tabIndex="1" type="text" value={this.state.baseIncome}

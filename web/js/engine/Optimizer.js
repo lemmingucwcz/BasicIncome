@@ -82,9 +82,11 @@ var Optimizer = (function() {
                 homeWork: new HistogramData(15),
                 freeTime: new HistogramData(7*16),
                 resourcesFulfilled: new HistogramData(60),
-                satisfactionSum: 0
+                satisfactionSum: 0,
+                belowMinimumResourcesPercent: 0
             }
 
+            var belowMinimumResourcesCnt = 0;
             for(var i=0; i<citizens.length; i++) {
                 var citizen = citizens[i];
                 Optimizer.optimizeState(citizen);
@@ -103,7 +105,14 @@ var Optimizer = (function() {
 
                 // Shift citizen resource need
                 citizen.resourcesNeeded += (citizen.satisfactionResult.resources - citizen.resourcesNeeded)*ConstantsConfig.RESOURCES_NEED_SHIFT;
+
+                // Check if resources are below minimum
+                if (citizen.satisfactionResult.resources < ConstantsConfig.MINIMUM_RESOURCES_NEEDED) {
+                    belowMinimumResourcesCnt++;
+                }
             }
+
+            stats.belowMinimumResourcesPercent = belowMinimumResourcesCnt*100 / citizens.length;
 
             return stats;
         }

@@ -37,7 +37,7 @@ var Satisfaction = (function() {
         /**
          * Compute satisfaction of given citizen
          *
-         * @param {Citizen} citizen
+         * @param {CitizenState} citizen
          */
         computeSatisfaction: function(citizen) {
             var output = {
@@ -45,6 +45,11 @@ var Satisfaction = (function() {
                 resources: 0,
                 satisfaction: 0
             };
+
+            // Add social benefit
+            if (citizen.isDependent) {
+                output.payment = UserVariables.socialBenefit;
+            }
 
             // Process activities
             Satisfaction._processActivity(citizen.legalJob, output, true);
@@ -57,7 +62,7 @@ var Satisfaction = (function() {
             output.resources += output.payment*(1-UserVariables.valueAddedTax) / GlobalState.priceMultiplier;
 
             // Compute resources satisfaction
-            output.satisfaction += this._resSatAbsFn(output.resources) + this._resSatDiffFn(output.resources - citizen.resourcesNeeded);
+            output.satisfaction += this._resSatAbsFn(output.resources / ConstantsConfig.MINIMUM_RESOURCES_NEEDED * 100) + this._resSatDiffFn(output.resources - citizen.resourcesNeeded);
 
             return output;
         }

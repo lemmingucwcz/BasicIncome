@@ -10,8 +10,9 @@ var FunctionConfig = {
         fn: "200",
         min: 0,
         max: 40,
-        scaleRange: 0.2,
-        offsetRange: 0
+        scaleVariation: 0.2,
+        offsetVariation: 0,
+        dependentScaleRatio: 0
     },
 
     "LEGAL_JOB_SATISFACTION": {
@@ -22,8 +23,9 @@ var FunctionConfig = {
         fn: "0.5-x/40",
         min: 0,
         max: 40,
-        scaleRange: 0.2,
-        offsetRange: 0.2
+        scaleVariation: 0.2,
+        offsetVariation: 0.2,
+        dependentScaleRatio: 1
     },
 
     "ILLEGAL_JOB_MONEY": {
@@ -34,8 +36,9 @@ var FunctionConfig = {
         fn: "220",
         min: 0,
         max: 40,
-        scaleRange: 0.2,
-        offsetRange: 0
+        scaleVariation: 0.2,
+        offsetVariation: 0,
+        dependentScaleRatio: 0
     },
 
     "ILLEGAL_JOB_SATISFACTION": {
@@ -46,8 +49,9 @@ var FunctionConfig = {
         fn: "-1-x/40",
         min: 0,
         max: 10,
-        scaleRange: 0.2,
-        offsetRange: 0.2
+        scaleVariation: 0.2,
+        offsetVariation: 0.2,
+        dependentScaleRatio: 1
     },
 
     "COMMUNAL_WORK_RESOURCES": {
@@ -58,8 +62,9 @@ var FunctionConfig = {
         fn: "80*(1+Math.min(0, (15-x)/60))",
         min: 0,
         max: 40,
-        scaleRange: 0.5,
-        offsetRange: 0
+        scaleVariation: 0.5,
+        offsetVariation: 0,
+        dependentScaleRatio: 0.2
     },
 
     "COMMUNAL_WORK_SATISFACTION": {
@@ -70,8 +75,9 @@ var FunctionConfig = {
         fn: "1*(0.7-Math.max(0, Math.min(1, (x-5)/12)))",
         min: 0,
         max: 40,
-        scaleRange: 0.5,
-        offsetRange: 0.3
+        scaleVariation: 0.5,
+        offsetVariation: 0.3,
+        dependentScaleRatio: 1
     },
 
     "HOME_WORK_RESOURCES": {
@@ -82,8 +88,9 @@ var FunctionConfig = {
         fn: "100*(1+Math.min(0, (7-x)/10))",
         min: 3,
         max: 15,
-        scaleRange: 0.5,
-        offsetRange: 0
+        scaleVariation: 0.5,
+        offsetVariation: 0,
+        dependentScaleRatio: 0.3
     },
 
     "HOME_WORK_SATISFACTION": {
@@ -94,8 +101,9 @@ var FunctionConfig = {
         fn: "0.5*(1-Math.max(0, Math.min(2, (x-5)/5)))",
         min: 3,
         max: 15,
-        scaleRange: 0.5,
-        offsetRange: 0.3
+        scaleVariation: 0.5,
+        offsetVariation: 0.3,
+        dependentScaleRatio: 1
     },
 
     "FREE_TIME_SATISFACTION": {
@@ -106,8 +114,9 @@ var FunctionConfig = {
         fn: "2*(1-(Math.pow(x/120, 1.6)))",
         min: 0,
         max: 7*16,
-        scaleRange: 0.5,
-        offsetRange: 0.3
+        scaleVariation: 0.5,
+        offsetVariation: 0.3,
+        dependentScaleRatio: 1
     },
 
     "RESOURCES_DIFF_SATISFACTION": {
@@ -124,10 +133,10 @@ var FunctionConfig = {
         id: "RESOURCES_ABS_SATISFACTION",
         name: "Resources absolute satisfaction",
         description: "Used to generate negative satisfaction when resources are too low absolutely",
-        args: "X is absolute amount of resources",
-        fn: "Math.min(0, (x-7000/4))",
-        min: 1000,
-        max: 2000
+        args: "X is percentage of MINIMUM_RESOURCES_NEEDED (100 = MINIMUM_RESOURCES_NEEDED)",
+        fn: "Math.min(0, (x-125)*Math.abs(x-125))",
+        min: 50,
+        max: 200
     }
 };
 

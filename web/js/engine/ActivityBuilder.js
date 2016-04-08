@@ -55,27 +55,33 @@ var ActivityBuilder = (function() {
         /**
          * Set scale and offset to activity
          *
-         * @param activity Activity to wotk on
+         * @param activity Activity to work on
          * @param moneyFnId ID of money function (or null)
          * @param resourcesFnId ID of resources function (or null)
          * @param satFnId ID of satisfaction function
+         * @param isDependent This is dependent person
          * @private
          */
-        _setScaleOffset: function(activity, moneyFnId, resourcesFnId, satFnId) {
+        _setScaleOffset: function(activity, moneyFnId, resourcesFnId, satFnId, isDependent) {
             if (moneyFnId != null) {
                 var fn = FunctionConfig[moneyFnId];
-                activity.moneyScale = 1 + Math.random()*fn.scaleRange*2 - fn.scaleRange;
+                activity.moneyScale = 1 + Math.random()*fn.scaleVariation*2 - fn.scaleVariation;
+                if (isDependent && (fn.dependentScaleRatio !== undefined)) {
+                    activity.moneyScale *= fn.dependentScaleRatio;
+                }
             }
 
             if (resourcesFnId != null) {
                 var fn = FunctionConfig[resourcesFnId];
-                activity.resourcesScale = 1 + Math.random()*fn.scaleRange*2 - fn.scaleRange;
-
+                activity.resourcesScale = 1 + Math.random()*fn.scaleVariation*2 - fn.scaleVariation;
+                if (isDependent && (fn.dependentScaleRatio !== undefined)) {
+                    activity.resourcesScale *= fn.dependentScaleRatio;
+                }
             }
 
             var fn = FunctionConfig[satFnId];
-            activity.satScale = 1 + Math.random()*fn.scaleRange*2 - fn.scaleRange;
-            activity.satOffset = Math.random()*fn.offsetRange*2 - fn.offsetRange;
+            activity.satScale = 1 + Math.random()*fn.scaleVariation*2 - fn.scaleVariation;
+            activity.satOffset = Math.random()*fn.offsetVariation*2 - fn.offsetVariation;
         },
 
         /**
@@ -120,37 +126,43 @@ var ActivityBuilder = (function() {
         },
 
         /**
+         * @param isDependent This is dependent person
+         *
          * @returns {Activity} Activity for legal job
          */
-        buildLegalJobActivity: function() {
+        buildLegalJobActivity: function(isDependent) {
             var moneyFn = this._getFunction("LEGAL_JOB_MONEY");
             var satFn = this._getFunction("LEGAL_JOB_SATISFACTION");
             var hoursArray = [ 0, 4*5, 6*5, 8*5 ];
 
             var res = this._buildActivity(hoursArray, moneyFn, null, satFn);
-            this._setScaleOffset(res, "LEGAL_JOB_MONEY", null, "LEGAL_JOB_SATISFACTION");
+            this._setScaleOffset(res, "LEGAL_JOB_MONEY", null, "LEGAL_JOB_SATISFACTION", isDependent);
 
             return res;
         },
 
         /**
+         * @param isDependent This is dependent person
+         *
          * @returns {Activity} Activity for legal job
          */
-        buildIllegalJobActivity: function() {
+        buildIllegalJobActivity: function(isDependent) {
             var moneyFn = this._getFunction("ILLEGAL_JOB_MONEY");
             var satFn = this._getFunction("ILLEGAL_JOB_SATISFACTION");
             var hoursArray = [ 0, 4*5, 6*5, 8*5 ];
 
             var res = this._buildActivity(hoursArray, moneyFn, null, satFn);
-            this._setScaleOffset(res, "ILLEGAL_JOB_MONEY", null, "ILLEGAL_JOB_SATISFACTION");
+            this._setScaleOffset(res, "ILLEGAL_JOB_MONEY", null, "ILLEGAL_JOB_SATISFACTION", isDependent);
 
             return res;
         },
 
         /**
+         * @param isDependent This is dependent person
+         *
          * @returns {Activity} Activity for communal work
          */
-        buildCommunalWorkActivity: function() {
+        buildCommunalWorkActivity: function(isDependent) {
             var res = new Activity();
             res.states = [];
 
@@ -159,15 +171,17 @@ var ActivityBuilder = (function() {
             var satisfactionDensity = this._getFunction("COMMUNAL_WORK_SATISFACTION");
 
             var res = this._buildActivity(hoursArray, null, resourcesDensity, satisfactionDensity);
-            this._setScaleOffset(res, null, "COMMUNAL_WORK_RESOURCES", "COMMUNAL_WORK_SATISFACTION");
+            this._setScaleOffset(res, null, "COMMUNAL_WORK_RESOURCES", "COMMUNAL_WORK_SATISFACTION", isDependent);
 
             return res;
         },
 
         /**
+         * @param isDependent This is dependent person
+         *
          * @returns {Activity} Activity for working on their own household
          */
-        buildHomeWorkActivity: function() {
+        buildHomeWorkActivity: function(isDependent) {
             var res = new Activity();
             res.states = [];
 
@@ -176,15 +190,17 @@ var ActivityBuilder = (function() {
             var satisfactionDensity = this._getFunction("HOME_WORK_SATISFACTION");
 
             var res = this._buildActivity(hoursArray, null, resourcesDensity, satisfactionDensity);
-            this._setScaleOffset(res, null, "HOME_WORK_RESOURCES", "HOME_WORK_SATISFACTION");
+            this._setScaleOffset(res, null, "HOME_WORK_RESOURCES", "HOME_WORK_SATISFACTION", isDependent);
 
             return res;
         },
 
         /**
+         * @param isDependent This is dependent person
+         *
          * @returns {Activity} Activity for free time
          */
-        buildFreeTimeActivity: function() {
+        buildFreeTimeActivity: function(isDependent) {
             var res = new Activity();
             res.states = [];
 
@@ -194,7 +210,7 @@ var ActivityBuilder = (function() {
             }
             var satisfactionDensity = this._getFunction("FREE_TIME_SATISFACTION");
             var res = this._buildActivity(hoursArray, null, null, satisfactionDensity);
-            this._setScaleOffset(res, null, null, "FREE_TIME_SATISFACTION");
+            this._setScaleOffset(res, null, null, "FREE_TIME_SATISFACTION", isDependent);
 
             return res;
         }

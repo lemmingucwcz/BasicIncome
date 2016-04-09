@@ -3,7 +3,7 @@
  */
 var Configuration = React.createClass(
     {
-        LOCAL_STORAGE_KEY: "BasicIncome",
+        LOCAL_STORAGE_KEY: "BasicIncomeConfig",
 
         getInitialState: function() {
             "use strict";

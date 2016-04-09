@@ -34,5 +34,10 @@ window.ConstantsConfig = {
     /**
      * Minimum resources needed by one citizen
      */
-    MINIMUM_RESOURCES_NEEDED: 7000/4
+    MINIMUM_RESOURCES_NEEDED: 7000/4,
+
+    /**
+     * How long is the game
+     */
+    GAME_STEPS: 20
 };

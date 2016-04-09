@@ -3,6 +3,8 @@
  */
 var Game = React.createClass(
     {
+        LOCAL_STORAGE_KEY: "BasicIncomeHiScore",
+
         /**
          * Compute stats for citizens
          *
@@ -33,7 +35,7 @@ var Game = React.createClass(
                 stats.vatIncome += money * state.valueAddedTax / 100.0;
             }
 
-            stats.balance = stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
+            stats.balance = state.savings + stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
 
             return stats;
         },
@@ -56,8 +58,20 @@ var Game = React.createClass(
                 prevStepStats: stats,
                 nextStepStats: null,
                 citizens: citizens,
-                stateExpenses: ConstantsConfig.STATE_EXPENSES_PER_CAPITA * citizens.length
+                stateExpenses: ConstantsConfig.STATE_EXPENSES_PER_CAPITA * citizens.length,
+                stepNo: 1,
+                score: 0,
+                hiScore: 0,
+                botched: false,
+                finished: false,
+                message: "Game started",
+                savings: 0
             };
+
+
+            if (localStorage[this.LOCAL_STORAGE_KEY] !== undefined) {
+                stats.hiScore = parseInt(localStorage[this.LOCAL_STORAGE_KEY]);
+            }
 
             res.nextStepStats = this._computeStats(res);
 
@@ -126,9 +140,21 @@ var Game = React.createClass(
             }
         },
 
+        resetGame: function() {
+            "use strict";
+            this.setState(this.getInitialState());
+        },
+
         nextStep: function () {
-            /* Update state */
+            // New state (should copy...)
             var newState = this.state;
+
+            // Check balance
+            if (this.state.nextStepStats.balance < 0) {
+                newState.message = "Cannot continue with negative balance";
+                this.setState(newState);
+                return;
+            }
 
             // Set user variables from state
             UserVariables.incomeTax = this.state.incomeTax * .01;
@@ -136,11 +162,51 @@ var Game = React.createClass(
             UserVariables.baseIncome = this.state.baseIncome;
             UserVariables.socialBenefit = this.state.socialBenefit;
 
+            // Save score
+            var stepScore = Math.round((this.state.nextStepStats.baseIncomeExpenses - this.state.nextStepStats.socialBenefitsExpenses)/1000);
+
             // Optimize population
             newState.prevStepStats = Optimizer.optimizePopulation(newState.citizens);
 
+            // Affect savings
+            newState.savings = this.state.nextStepStats.balance;
+
             // Compute next step stats
             newState.nextStepStats = this._computeStats(newState);
+
+            // Update step number
+            newState.stepNo = this.state.stepNo + 1;
+
+            // Copy message
+
+            // Check botched game
+            newState.finished = this.state.finished;
+            newState.botched = this.state.botched;
+            if (newState.prevStepStats.satisfactionSum < 0) {
+                newState.botched = true;
+            }
+
+            if ((!newState.botched) && (!newState.finished)) {
+                // Add score
+                newState.score = this.state.score + stepScore;
+
+                if (newState.stepNo == ConstantsConfig.GAME_STEPS) {
+                    // Record hi-score
+                    newState.hiScore = newState.score;
+                    newState.finished = true;
+                }
+                else {
+                    newState.message = "New round";
+                }
+            }
+
+            if (newState.botched) {
+                newState.message = "Citizens dissatisfied, GAME OVER !!!"
+            }
+
+            if (newState.finished) {
+                newState.message = "Game finished - you can continue if you like"
+            }
 
             // Update state
             this.setState(newState);
@@ -195,6 +261,15 @@ var Game = React.createClass(
             var prevStepStats = "";
             if (this.state.prevStepStats != null) {
                 prevStepStats = <div className="hudPart double">
+                    <h2>Statistics</h2>
+                    <div className="hudElm">
+                        <div className="title">Step #</div>
+                        <div className="value">{this.state.stepNo}</div>
+                    </div>
+                    <div className="hudElm">
+                        <div className="title">&nbsp;</div>
+                        <div className="value">&nbsp;</div>
+                    </div>
                     <div className="hudElm">
                         <div className="title">Legal job avg hrs</div>
                         <div className="value">{this._hudFmt(this.state.prevStepStats.legalJob.avg())}</div>
@@ -228,12 +303,22 @@ var Game = React.createClass(
                         <div className="title">Under-resourced ctzs</div>
                         <div className="value">{Math.round(this.state.prevStepStats.belowMinimumResourcesPercent)}%</div>
                     </div>
+                    <div className="hudElm">
+                        <div className="title">Score</div>
+                        <div className="value">{this.state.score}</div>
+                    </div>
+                    <div className="hudElm">
+                        <div className="title">Hi-score</div>
+                        <div className="value">{this.state.hiScore}</div>
+                    </div>
                 </div>;
             }
 
             var nextStepStats = "";
             if (this.state.nextStepStats != null) {
                 nextStepStats = <div className="hudPart double">
+                    <h2>Budget</h2>
+
                     <div className="hudElm">
                         <div className="title">Income tax income</div>
                         <div className="value">{this._moneyFmt(this.state.nextStepStats.incomeTaxIncome)}</div>
@@ -259,8 +344,8 @@ var Game = React.createClass(
                         <div className="value">&nbsp;</div>
                     </div>
                     <div className="hudElm">
-                        <div className="title">&nbsp;</div>
-                        <div className="value">&nbsp;</div>
+                        <div className="title">Savings</div>
+                        <div className="value">{this._moneyFmt(this.state.savings)}</div>
                     </div>
                     <div className="hudElm">
                         <div className="title">Total balance</div>
@@ -272,6 +357,12 @@ var Game = React.createClass(
             return <div>
                 {prevStepStats}
                 <div className="hudPart single">
+                    <h2>Controls</h2>
+
+                    <a className="hudElm" tabIndex="1" onClick={this.reset}>
+                        New game
+                    </a>
+
                     <div className="hudElm">
                         <div className="title">Social benefit</div>
                         <div className="value"><input tabIndex="1" type="text" value={this.state.socialBenefit}
@@ -296,7 +387,18 @@ var Game = React.createClass(
                         Next step
                     </a>
                 </div>
-                {nextStepStats}
+
+                <div style={{float: "left"}}>
+                    {nextStepStats}
+
+                    <br />
+                    <div className="hudPart double">
+                        <div className="hudElm double">
+                            <div className="title">Message</div>
+                            <div className="messageValue">{this.state.message}</div>
+                        </div>
+                    </div>
+                </div>
             </div>;
         }
     }

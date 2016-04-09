@@ -183,7 +183,7 @@ var Configuration = React.createClass(
                         }
                     </select><br />
 
-                    <input type="text" placeholder="Configuration name" value={this.state.configName} style={{"text-align": "left", margin: "5px 10px", width: "465px", "font-size": "120%"}} onChange={this.configNameChanged} /><br />
+                    <input type="text" placeholder="Configuration name" value={this.state.configName} style={{textAlign: "left", margin: "5px 10px", width: "465px", fontSize: "120%"}} onChange={this.configNameChanged} /><br />
 
                     {saveBtn}
                     {loadBtn}

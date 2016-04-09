@@ -114,114 +114,131 @@ var Game = React.createClass(
         newGame: function () {
             "use strict";
 
-            var citizens = [];
+            // Show cover
+            this.props.getCover().show();
 
-            // Seed random number generator
-            Random.seed(ConstantsConfig.RANDOM_SEED);
+            // Start process the way that cover can show
+            window.setTimeout(function() {
+                var citizens = [];
 
-            for (var i = 0; i < ConstantsConfig.POPULATION_SIZE; i++) {
-                var isDependent = Random.random() * 100 < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
+                // Seed random number generator
+                Random.seed(ConstantsConfig.RANDOM_SEED);
 
-                citizens.push(CitizenBuilder.buildCitizen(isDependent));
-            }
+                for (var i = 0; i < ConstantsConfig.POPULATION_SIZE; i++) {
+                    var isDependent = Random.random() * 100 < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
 
-            var stats = Optimizer.optimizePopulation(citizens);
+                    citizens.push(CitizenBuilder.buildCitizen(isDependent));
+                }
 
-            var newState = {
-                baseIncome: 0,
-                incomeTax: UserVariables.incomeTax * 100,
-                valueAddedTax: UserVariables.valueAddedTax * 100,
-                socialBenefit: UserVariables.socialBenefit,
-                prevStepStats: stats,
-                nextStepStats: null,
-                citizens: citizens,
-                stateExpenses: ConstantsConfig.STATE_EXPENSES_PER_CAPITA * citizens.length,
-                stepNo: 1,
-                score: 0,
-                hiScore: 0,
-                botched: false,
-                finished: false,
-                message: "Game started",
-                savings: 0
-            };
+                var stats = Optimizer.optimizePopulation(citizens);
 
-            if (window.localStorage[this.LOCAL_STORAGE_KEY] !== undefined) {
-                newState.hiScore = parseInt(window.localStorage[this.LOCAL_STORAGE_KEY]);
-            }
+                var newState = {
+                    baseIncome: 0,
+                    incomeTax: UserVariables.incomeTax * 100,
+                    valueAddedTax: UserVariables.valueAddedTax * 100,
+                    socialBenefit: UserVariables.socialBenefit,
+                    prevStepStats: stats,
+                    nextStepStats: null,
+                    citizens: citizens,
+                    stateExpenses: ConstantsConfig.STATE_EXPENSES_PER_CAPITA * citizens.length,
+                    stepNo: 1,
+                    score: 0,
+                    hiScore: 0,
+                    botched: false,
+                    finished: false,
+                    message: "Game started",
+                    savings: 0
+                };
 
-            newState.nextStepStats = this._computeStats(newState);
+                if (window.localStorage[this.LOCAL_STORAGE_KEY] !== undefined) {
+                    newState.hiScore = parseInt(window.localStorage[this.LOCAL_STORAGE_KEY]);
+                }
 
-            this.setState(newState);
+                newState.nextStepStats = this._computeStats(newState);
+
+                this.setState(newState);
+
+                this.props.getCover().hide();
+            }.bind(this), 100);
         },
 
         nextStep: function () {
-            // New state (should copy...)
-            var newState = this.state;
+            // Show cover
+            this.props.getCover().show();
 
-            // Check balance
-            if (this.state.nextStepStats.balance < 0) {
-                newState.message = "Cannot continue with negative balance";
+            // Start process the way that cover can show
+            window.setTimeout(function() {
+                // New state (should copy...)
+                var newState = this.state;
+
+                // Check balance
+                if (this.state.nextStepStats.balance < 0) {
+                    newState.message = "Cannot continue with negative balance";
+                    this.setState(newState);
+                    return;
+                }
+
+                // Set user variables from state
+                UserVariables.incomeTax = this.state.incomeTax * .01;
+                UserVariables.valueAddedTax = this.state.valueAddedTax * .01;
+                UserVariables.baseIncome = this.state.baseIncome;
+                UserVariables.socialBenefit = this.state.socialBenefit;
+
+                // Optimize population
+                newState.prevStepStats = Optimizer.optimizePopulation(newState.citizens);
+
+                // Affect savings
+                newState.savings = this.state.nextStepStats.balance;
+
+                // Save score
+                var stepScore = Math.round(
+                    (this.state.nextStepStats.baseIncomeExpenses - this.state.nextStepStats.socialBenefitsExpenses + this.state.prevStepStats.satisfactionSum)
+                    / this.state.citizens.length);
+
+                // Compute next step stats
+                newState.nextStepStats = this._computeStats(newState);
+
+                // Update step number
+                newState.stepNo = this.state.stepNo + 1;
+
+                // Copy message
+
+                // Check botched game
+                newState.finished = this.state.finished;
+                newState.botched = this.state.botched;
+                if (newState.prevStepStats.satisfactionSum < 0) {
+                    newState.botched = true;
+                }
+
+                if ((!newState.botched) && (!newState.finished)) {
+                    // Add score
+                    newState.score = this.state.score + stepScore;
+
+                    if (newState.stepNo == ConstantsConfig.GAME_STEPS) {
+                        // Record hi-score
+                        newState.hiScore = newState.score;
+                        window.localStorage[this.LOCAL_STORAGE_KEY] = newState.hiScore;
+                        newState.finished = true;
+                    }
+                    else {
+                        newState.message = "New round";
+                    }
+                }
+
+                if (newState.botched) {
+                    newState.message = "Citizens dissatisfied, GAME OVER !!!"
+                }
+
+                if (newState.finished) {
+                    newState.message = "Game finished - you can continue if you like"
+                }
+
+                // Update state
                 this.setState(newState);
-                return;
-            }
 
-            // Set user variables from state
-            UserVariables.incomeTax = this.state.incomeTax * .01;
-            UserVariables.valueAddedTax = this.state.valueAddedTax * .01;
-            UserVariables.baseIncome = this.state.baseIncome;
-            UserVariables.socialBenefit = this.state.socialBenefit;
-
-            // Optimize population
-            newState.prevStepStats = Optimizer.optimizePopulation(newState.citizens);
-
-            // Affect savings
-            newState.savings = this.state.nextStepStats.balance;
-
-            // Save score
-            var stepScore = Math.round(
-                (this.state.nextStepStats.baseIncomeExpenses - this.state.nextStepStats.socialBenefitsExpenses + this.state.prevStepStats.satisfactionSum)
-                / this.state.citizens.length);
-
-            // Compute next step stats
-            newState.nextStepStats = this._computeStats(newState);
-
-            // Update step number
-            newState.stepNo = this.state.stepNo + 1;
-
-            // Copy message
-
-            // Check botched game
-            newState.finished = this.state.finished;
-            newState.botched = this.state.botched;
-            if (newState.prevStepStats.satisfactionSum < 0) {
-                newState.botched = true;
-            }
-
-            if ((!newState.botched) && (!newState.finished)) {
-                // Add score
-                newState.score = this.state.score + stepScore;
-
-                if (newState.stepNo == ConstantsConfig.GAME_STEPS) {
-                    // Record hi-score
-                    newState.hiScore = newState.score;
-                    window.localStorage[this.LOCAL_STORAGE_KEY] = newState.hiScore;
-                    newState.finished = true;
-                }
-                else {
-                    newState.message = "New round";
-                }
-            }
-
-            if (newState.botched) {
-                newState.message = "Citizens dissatisfied, GAME OVER !!!"
-            }
-
-            if (newState.finished) {
-                newState.message = "Game finished - you can continue if you like"
-            }
-
-            // Update state
-            this.setState(newState);
+                // Hide cover
+                this.props.getCover().hide();
+            }.bind(this), 100);
         },
 
         /**

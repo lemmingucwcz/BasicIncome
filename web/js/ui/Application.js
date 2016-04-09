@@ -27,11 +27,18 @@ var Application = React.createClass(
             return "button" + ((this.state.navigation == navigation) ? " active" : "");
         },
 
+        _getCover: function() {
+            "use strict";
+            return this.refs.cover;
+        },
+
         render: function () {
             var content = "";
 
+            var cover = <Cover ref="cover" />;
+
             if (this.state.navigation == this.NAVIGATION_GAME) {
-                content = <Game />
+                content = <Game getCover={this._getCover} />
             }
             else if (this.state.navigation == this.NAVIGATION_FUNCTION_DESIGNER) {
                 content = <FunctionDesigner />
@@ -41,6 +48,7 @@ var Application = React.createClass(
             }
 
             return <div>
+                {cover}
                 <div className="menu">
                     <a href="mechanics.html" target="_blank" className="rightLink">Explanation of simulation mechanics</a>
                     <a href="#" className={this._getButtonClasses(this.NAVIGATION_GAME)} onClick={this.goToNavigation.bind(this, this.NAVIGATION_GAME)}>Simulation</a>

@@ -35,16 +35,16 @@ var Game = React.createClass(
                 stats.vatIncome += money * state.valueAddedTax / 100.0;
             }
 
-            stats.stepBalance = stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
-            stats.totalBalance = state.savings + stats.stepBalance;
+            stats.turnBalance = stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
+            stats.totalBalance = state.savings + stats.turnBalance;
 
             return stats;
         },
 
         getInitialState: function () {
-            // Just a state with zero step number
+            // Just a state with zero turn number
             return {
-                stepNo: 0,
+                turnNo: 0,
                 message: "Click \"New game\" to start a game."
             };
         },
@@ -76,7 +76,7 @@ var Game = React.createClass(
             if (n >= 0) {
                 var state = this.state;
                 state.baseIncome = n;
-                state.nextStepStats = this._computeStats(state);
+                state.nextTurnStats = this._computeStats(state);
                 this.setState(state);
             }
         },
@@ -86,7 +86,7 @@ var Game = React.createClass(
             if (n >= 0) {
                 var state = this.state;
                 state.incomeTax = n;
-                state.nextStepStats = this._computeStats(state);
+                state.nextTurnStats = this._computeStats(state);
                 this.setState(state);
             }
         },
@@ -96,7 +96,7 @@ var Game = React.createClass(
             if (n >= 0) {
                 var state = this.state;
                 state.valueAddedTax = n;
-                state.nextStepStats = this._computeStats(state);
+                state.nextTurnStats = this._computeStats(state);
                 this.setState(state);
             }
         },
@@ -106,7 +106,7 @@ var Game = React.createClass(
             if (n >= 0) {
                 var state = this.state;
                 state.socialBenefit = n;
-                state.nextStepStats = this._computeStats(state);
+                state.nextTurnStats = this._computeStats(state);
                 this.setState(state);
             }
         },
@@ -138,11 +138,11 @@ var Game = React.createClass(
                     incomeTax: UserVariables.incomeTax * 100,
                     valueAddedTax: UserVariables.valueAddedTax * 100,
                     socialBenefit: UserVariables.socialBenefit,
-                    prevStepStats: stats,
-                    nextStepStats: null,
+                    prevTurnStats: stats,
+                    nextTurnStats: null,
                     citizens: citizens,
                     stateExpenses: ConstantsConfig.STATE_EXPENSES_PER_CAPITA * citizens.length,
-                    stepNo: 1,
+                    turnNo: 1,
                     score: 0,
                     hiScore: 0,
                     botched: false,
@@ -155,7 +155,7 @@ var Game = React.createClass(
                     newState.hiScore = parseInt(window.localStorage[this.LOCAL_STORAGE_KEY]);
                 }
 
-                newState.nextStepStats = this._computeStats(newState);
+                newState.nextTurnStats = this._computeStats(newState);
 
                 this.setState(newState);
 
@@ -163,12 +163,12 @@ var Game = React.createClass(
             }.bind(this), 100);
         },
 
-        nextStep: function () {
+        nextTurn: function () {
             // New state (should copy...)
             var newState = this.state;
 
             // Check balance
-            if (this.state.nextStepStats.totalBalance < 0) {
+            if (this.state.nextTurnStats.totalBalance < 0) {
                 newState.message = "Cannot continue with negative balance";
                 this.setState(newState);
                 return;
@@ -186,36 +186,36 @@ var Game = React.createClass(
                 UserVariables.socialBenefit = this.state.socialBenefit;
 
                 // Optimize population
-                newState.prevStepStats = Optimizer.optimizePopulation(newState.citizens);
+                newState.prevTurnStats = Optimizer.optimizePopulation(newState.citizens);
 
                 // Affect savings
-                newState.savings = this.state.nextStepStats.totalBalance;
+                newState.savings = this.state.nextTurnStats.totalBalance;
 
                 // Save score
-                var stepScore = Math.round(
-                    (this.state.nextStepStats.baseIncomeExpenses - this.state.nextStepStats.socialBenefitsExpenses + this.state.prevStepStats.satisfactionSum)
+                var turnScore = Math.round(
+                    (this.state.nextTurnStats.baseIncomeExpenses - this.state.nextTurnStats.socialBenefitsExpenses + this.state.prevTurnStats.satisfactionSum)
                     / this.state.citizens.length);
 
-                // Compute next step stats
-                newState.nextStepStats = this._computeStats(newState);
+                // Compute next turn stats
+                newState.nextTurnStats = this._computeStats(newState);
 
-                // Update step number
-                newState.stepNo = this.state.stepNo + 1;
+                // Update turn number
+                newState.turnNo = this.state.turnNo + 1;
 
                 // Copy message
 
                 // Check botched game
                 newState.finished = this.state.finished;
                 newState.botched = this.state.botched;
-                if (newState.prevStepStats.satisfactionSum < 0) {
+                if (newState.prevTurnStats.satisfactionSum < 0) {
                     newState.botched = true;
                 }
 
                 if ((!newState.botched) && (!newState.finished)) {
                     // Add score
-                    newState.score = this.state.score + stepScore;
+                    newState.score = this.state.score + turnScore;
 
-                    if (newState.stepNo == ConstantsConfig.GAME_STEPS) {
+                    if (newState.turnNo == ConstantsConfig.GAME_STEPS) {
                         // Record hi-score
                         newState.hiScore = newState.score;
                         window.localStorage[this.LOCAL_STORAGE_KEY] = newState.hiScore;
@@ -290,12 +290,12 @@ var Game = React.createClass(
         render: function () {
             var statsContents = "";
 
-            if (this.state.stepNo > 0) {
+            if (this.state.turnNo > 0) {
                 statsContents =
                     <div>
                         <div className="hudElm">
                             <div className="title">Turn #</div>
-                            <div className="value">{this.state.stepNo}</div>
+                            <div className="value">{this.state.turnNo}</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">&nbsp;</div>
@@ -303,36 +303,36 @@ var Game = React.createClass(
                         </div>
                         <div className="hudElm">
                             <div className="title">Legal job avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevStepStats.legalJob.avg())}</div>
+                            <div className="value">{this._hudFmt(this.state.prevTurnStats.legalJob.avg())}</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">Illegal job avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevStepStats.illegalJob.avg())}</div>
+                            <div className="value">{this._hudFmt(this.state.prevTurnStats.illegalJob.avg())}</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">Comm. work avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevStepStats.communalWork.avg())}</div>
+                            <div className="value">{this._hudFmt(this.state.prevTurnStats.communalWork.avg())}</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">House work avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevStepStats.homeWork.avg())}</div>
+                            <div className="value">{this._hudFmt(this.state.prevTurnStats.homeWork.avg())}</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">Free time avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevStepStats.freeTime.avg())}</div>
+                            <div className="value">{this._hudFmt(this.state.prevTurnStats.freeTime.avg())}</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">Average satisfaction</div>
                             <div className="value">{Math.round(
-                                this.state.prevStepStats.satisfactionSum / this.state.citizens.length)}</div>
+                                this.state.prevTurnStats.satisfactionSum / this.state.citizens.length)}</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">Resources fulfillment</div>
-                            <div className="value">{Math.round(this.state.prevStepStats.resourcesFulfilled.avg() * 5)}%</div>
+                            <div className="value">{Math.round(this.state.prevTurnStats.resourcesFulfilled.avg() * 5)}%</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">Under-resourced ctzs</div>
-                            <div className="value">{Math.round(this.state.prevStepStats.belowMinimumResourcesPercent)}%</div>
+                            <div className="value">{Math.round(this.state.prevTurnStats.belowMinimumResourcesPercent)}%</div>
                         </div>
                         <div className="hudElm">
                             <div className="title">Score</div>
@@ -345,7 +345,7 @@ var Game = React.createClass(
                     </div>;
             }
 
-            prevStepStats =
+            prevTurnStats =
                 <div className="hudPart double">
                     <h2>Statistics</h2>
 
@@ -355,19 +355,19 @@ var Game = React.createClass(
 
             var budgetContents = "";
 
-            if (this.state.stepNo > 0) {
+            if (this.state.turnNo > 0) {
                 budgetContents = <div>
                     <div className="hudElm">
                         <div className="title">Income tax income</div>
-                        <div className="value">{this._moneyFmt(this.state.nextStepStats.incomeTaxIncome)}</div>
+                        <div className="value">{this._moneyFmt(this.state.nextTurnStats.incomeTaxIncome)}</div>
                     </div>
                     <div className="hudElm">
                         <div className="title">VAT income</div>
-                        <div className="value">{this._moneyFmt(this.state.nextStepStats.vatIncome)}</div>
+                        <div className="value">{this._moneyFmt(this.state.nextTurnStats.vatIncome)}</div>
                     </div>
                     <div className="hudElm">
                         <div className="title">Base income expenses</div>
-                        <div className="value">{this._moneyFmt(this.state.nextStepStats.baseIncomeExpenses)}</div>
+                        <div className="value">{this._moneyFmt(this.state.nextTurnStats.baseIncomeExpenses)}</div>
                     </div>
                     <div className="hudElm">
                         <div className="title">State expenses</div>
@@ -375,11 +375,11 @@ var Game = React.createClass(
                     </div>
                     <div className="hudElm">
                         <div className="title">Social bnft expenses</div>
-                        <div className="value">{this._moneyFmt(this.state.nextStepStats.socialBenefitsExpenses)}</div>
+                        <div className="value">{this._moneyFmt(this.state.nextTurnStats.socialBenefitsExpenses)}</div>
                     </div>
                     <div className="hudElm">
                         <div className="title">Turn balance</div>
-                        <div className="value">{this._balanceFmt(this.state.nextStepStats.stepBalance)}</div>
+                        <div className="value">{this._balanceFmt(this.state.nextTurnStats.turnBalance)}</div>
                     </div>
                     <div className="hudElm">
                         <div className="title">Savings</div>
@@ -387,12 +387,12 @@ var Game = React.createClass(
                     </div>
                     <div className="hudElm">
                         <div className="title">Total balance</div>
-                        <div className="value">{this._balanceFmt(this.state.nextStepStats.totalBalance)}</div>
+                        <div className="value">{this._balanceFmt(this.state.nextTurnStats.totalBalance)}</div>
                     </div>
                 </div>
             }
 
-            nextStepStats = <div className="hudPart double">
+            nextTurnStats = <div className="hudPart double">
                 <h2>Budget</h2>
 
                 {budgetContents}
@@ -400,7 +400,7 @@ var Game = React.createClass(
 
             var controls = "";
 
-            if (this.state.stepNo > 0) {
+            if (this.state.turnNo > 0) {
                 controls = <div>
                     <div className="hudElm">
                         <div className="title">Social benefit</div>
@@ -422,14 +422,14 @@ var Game = React.createClass(
                         <div className="value"><input tabIndex="1" type="text" value={this.state.valueAddedTax}
                                                       onChange={this.changeValueAddedTax}/></div>
                     </div>
-                    <a className="hudElm" tabIndex="1" onClick={this.nextStep}>
+                    <a className="hudElm" tabIndex="1" onClick={this.nextTurn}>
                         Next turn
                     </a>
                 </div>;
             }
 
             return <div>
-                {prevStepStats}
+                {prevTurnStats}
                 <div className="hudPart single">
                     <h2>Controls</h2>
 
@@ -441,7 +441,7 @@ var Game = React.createClass(
                 </div>
 
                 <div style={{float: "left"}}>
-                    {nextStepStats}
+                    {nextTurnStats}
 
                     <br />
                     <div className="hudPart double">

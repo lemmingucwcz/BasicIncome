@@ -48,12 +48,12 @@ var Satisfaction = (function() {
 
             // Add social benefit
             if (citizen.isDependent) {
-                output.payment = UserVariables.socialBenefit;
+                output.payment += UserVariables.socialBenefit;
             }
 
             // Process activities
             Satisfaction._processActivity(citizen.legalJob, output, true);
-            Satisfaction._processActivity(citizen.illegalJob, output, true);
+            Satisfaction._processActivity(citizen.illegalJob, output, false);
             Satisfaction._processActivity(citizen.homeWork, output, false);
             Satisfaction._processActivity(citizen.communalWork, output, false);
             Satisfaction._processActivity(citizen.freeTime, output, false);

@@ -22,5 +22,5 @@ window.UserVariables = {
     /**
      * Social benefit for dependent persons
      */
-    socialBenefit: 7000/4,
+    socialBenefit: 1750,
 };

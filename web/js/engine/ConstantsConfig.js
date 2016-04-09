@@ -44,10 +44,30 @@ window.ConstantsConfig = {
     /**
      * How long is the game
      */
-    GAME_STEPS: 20,
+    GAME_TURNS: 20,
 
     /**
      * Random seed to use
      */
-    RANDOM_SEED: 1
+    RANDOM_SEED: 1,
+
+    /**
+     * Initial income tax at the start of the game
+     */
+    INITIAL_INCOME_TAX: 0.15,
+
+    /**
+     * Initial value added tax at the start of the game
+     */
+    INITIAL_VAT: 0.2,
+
+    /**
+     * Initial social benefit at the start of the game
+     */
+    INITIAL_SOCIAL_BENEFIT: 1750,
+
+    /**
+     * Allow negative balance (for testing purposes)
+     */
+    ALLOW_NEGATIVE_BALANCE: 0
 };

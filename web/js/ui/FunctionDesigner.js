@@ -125,13 +125,16 @@ var FunctionDesigner = React.createClass(
         store: function () {
             "use strict";
 
-            FunctionConfig[this.state.selectedId].fn = this.state.fn.fn;
+            // Parse and draw new data
+            this.draw();
 
-            // Mark new function as original
-            this.state.originalFn = this.state.fn.fn;
+            if (this.state.error.length == 0) {
+                // No error - save
+                FunctionConfig[this.state.selectedId].fn = this.state.fn.fn;
 
-            // Redraw
-            this.setState(this.state);
+                // Mark new function as original
+                this.state.originalFn = this.state.fn.fn;
+            }
         },
 
         render: function () {

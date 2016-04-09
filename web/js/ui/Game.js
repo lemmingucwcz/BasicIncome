@@ -124,13 +124,20 @@ var Game = React.createClass(
                 // Seed random number generator
                 Random.seed(ConstantsConfig.RANDOM_SEED);
 
+                // Generate citizens
                 for (var i = 0; i < ConstantsConfig.POPULATION_SIZE; i++) {
                     var isDependent = (Random.random() * 100) < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
 
-                    console.log("isDependent="+isDependent);
                     citizens.push(CitizenBuilder.buildCitizen(isDependent));
                 }
 
+                // Reset user variables
+                UserVariables.incomeTax = ConstantsConfig.INITIAL_INCOME_TAX;
+                UserVariables.valueAddedTax = ConstantsConfig.INITIAL_VAT;
+                UserVariables.socialBenefit = ConstantsConfig.INITIAL_SOCIAL_BENEFIT;
+                UserVariables.baseIncome = 0;
+
+                // Optimize population for initial user variables
                 var stats = Optimizer.optimizePopulation(citizens);
 
                 var newState = {
@@ -168,8 +175,8 @@ var Game = React.createClass(
             var newState = this.state;
 
             // Check balance
-            if (this.state.nextTurnStats.totalBalance < 0) {
-                newState.message = "Cannot continue with negative balance";
+            if ((this.state.nextTurnStats.totalBalance < 0) && (ConstantsConfig.ALLOW_NEGATIVE_BALANCE == 0)) {
+                newState.message = "Cannot continue with negative total balance";
                 this.setState(newState);
                 return;
             }
@@ -209,13 +216,14 @@ var Game = React.createClass(
                 newState.botched = this.state.botched;
                 if (newState.prevTurnStats.satisfactionSum < 0) {
                     newState.botched = true;
+                    newState.score = 0;
                 }
 
                 if ((!newState.botched) && (!newState.finished)) {
                     // Add score
                     newState.score = this.state.score + turnScore;
 
-                    if (newState.turnNo == ConstantsConfig.GAME_STEPS) {
+                    if (newState.turnNo > ConstantsConfig.GAME_TURNS) {
                         // Record hi-score
                         newState.hiScore = newState.score;
                         window.localStorage[this.LOCAL_STORAGE_KEY] = newState.hiScore;

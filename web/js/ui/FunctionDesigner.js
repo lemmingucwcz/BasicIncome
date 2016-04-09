@@ -146,10 +146,13 @@ var FunctionDesigner = React.createClass(
                 </a>;
             }
 
-            var variations = <div></div>;
 
-            if ((this.state.fn !== undefined) && (this.state.fn.scaleVariation !== undefined)) {
-                variations = <div>
+            var variations = "";
+
+            if (this.state.fn !== undefined) {
+                var variationsStyle = (this.state.fn.scaleVariation !== undefined) ? {} : {display: "none"};
+
+                variations = <div style={variationsStyle}>
                     <div className="hudElm">
                         <div className="title">Scale variation</div>
                         <div className="value"><input tabIndex="1" type="text" ref="scaleVariation"
@@ -191,6 +194,8 @@ var FunctionDesigner = React.createClass(
                                       <div className="value" style={{"fontSize": "100%"}}><input style={{"textAlign": "left"}} tabIndex="1" type="text" ref="fn"
                                                                     defaultValue={this.state.fn.fn}/></div>
                                   </div>
+
+                                  <p className="description" style={{ fontSize: "80%"}}>{this.state.fn.args}</p>
 
                                   <a className="hudElm double" tabIndex="1" onClick={this.draw}>
                                       Draw

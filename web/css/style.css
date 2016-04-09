@@ -113,7 +113,7 @@ body {
 
 a.hudElm {
     margin-top: 13px;
-    background: rgba(255, 165, 0, 0.7);
+    background: orange;
     cursor: pointer;
     font-size: 200%;
     text-align: center;
@@ -121,7 +121,7 @@ a.hudElm {
 }
 
 a.hudElm:hover {
-    background: orange;
+    background: rgba(255, 165, 0, 0.7);
 }
 
 .description {

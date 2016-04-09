@@ -170,7 +170,7 @@ var Configuration = React.createClass(
                     {this.renderValue("Initial resources needed by one \"normal\" citizen", "RESOURCES_NEEDED")}
                     {this.renderValue("Initial resources needed by one dependent citizen", "RESOURCES_NEEDED_DEPENDENT")}
                     {this.renderValue("How quickly citizen accomodates to new amount of resources (0 (not at all) - 1 (immediatelly))", "RESOURCES_NEED_SHIFT")}
-                    {this.renderValue("Population size (numbero of citizens)", "POPULATION_SIZE")}
+                    {this.renderValue("Population size (number of citizens)", "POPULATION_SIZE")}
                     {this.renderValue("Percentage of dependent persons in population", "DEPENDENT_PERSON_PERCENTAGE")}
                     {this.renderValue("Minimal resources needed for survival of person (not really a limit, but citizens start to be very disappointed below this line)", "MINIMUM_RESOURCES_NEEDED")}
                     {this.renderValue("Seed to seed the random number generator used to create population. Use other seeds to get different populations.", "RANDOM_SEED")}

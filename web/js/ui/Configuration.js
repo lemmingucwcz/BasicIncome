@@ -15,7 +15,8 @@ var Configuration = React.createClass(
                     POPULATION_SIZE: ConstantsConfig.POPULATION_SIZE,
                     RESOURCES_NEEDED: ConstantsConfig.RESOURCES_NEEDED,
                     DEPENDENT_PERSON_PERCENTAGE: ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE,
-                    MINIMUM_RESOURCES_NEEDED: ConstantsConfig.MINIMUM_RESOURCES_NEEDED
+                    MINIMUM_RESOURCES_NEEDED: ConstantsConfig.MINIMUM_RESOURCES_NEEDED,
+                    RANDOM_SEED: ConstantsConfig.RANDOM_SEED
                 },
 
                 configName: "",
@@ -169,6 +170,7 @@ var Configuration = React.createClass(
                     {this.renderValue("Population size", "POPULATION_SIZE")}
                     {this.renderValue("Percentage of dependent persons in population", "DEPENDENT_PERSON_PERCENTAGE")}
                     {this.renderValue("Minimal resources needed for survival of person (not really a limit, but citizens start to be very disappointed below this line)", "MINIMUM_RESOURCES_NEEDED")}
+                    {this.renderValue("Seed to seed the random number generator used to create population. Use other seeds to get different populations.", "RANDOM_SEED")}
                 </div>
 
                 <div className="hudPart double">

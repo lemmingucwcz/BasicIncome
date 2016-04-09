@@ -65,7 +65,7 @@ var ActivityBuilder = (function() {
         _setScaleOffset: function(activity, moneyFnId, resourcesFnId, satFnId, isDependent) {
             if (moneyFnId != null) {
                 var fn = FunctionConfig[moneyFnId];
-                activity.moneyScale = 1 + Math.random()*fn.scaleVariation*2 - fn.scaleVariation;
+                activity.moneyScale = 1 + Random.random()*fn.scaleVariation*2 - fn.scaleVariation;
                 if (isDependent && (fn.dependentScaleRatio !== undefined)) {
                     activity.moneyScale *= fn.dependentScaleRatio;
                 }
@@ -73,15 +73,15 @@ var ActivityBuilder = (function() {
 
             if (resourcesFnId != null) {
                 var fn = FunctionConfig[resourcesFnId];
-                activity.resourcesScale = 1 + Math.random()*fn.scaleVariation*2 - fn.scaleVariation;
+                activity.resourcesScale = 1 + Random.random()*fn.scaleVariation*2 - fn.scaleVariation;
                 if (isDependent && (fn.dependentScaleRatio !== undefined)) {
                     activity.resourcesScale *= fn.dependentScaleRatio;
                 }
             }
 
             var fn = FunctionConfig[satFnId];
-            activity.satScale = 1 + Math.random()*fn.scaleVariation*2 - fn.scaleVariation;
-            activity.satOffset = Math.random()*fn.offsetVariation*2 - fn.offsetVariation;
+            activity.satScale = 1 + Random.random()*fn.scaleVariation*2 - fn.scaleVariation;
+            activity.satOffset = Random.random()*fn.offsetVariation*2 - fn.offsetVariation;
         },
 
         /**

@@ -42,8 +42,12 @@ var Game = React.createClass(
 
         getInitialState: function () {
             var citizens = [];
+
+            // Seed random number generator
+            Random.seed(ConstantsConfig.RANDOM_SEED);
+
             for (var i = 0; i < ConstantsConfig.POPULATION_SIZE; i++) {
-                var isDependent = Math.random()*100 < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
+                var isDependent = Random.random()*100 < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
 
                 citizens.push(CitizenBuilder.buildCitizen(isDependent));
             }

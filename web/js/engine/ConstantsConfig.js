@@ -39,5 +39,10 @@ window.ConstantsConfig = {
     /**
      * How long is the game
      */
-    GAME_STEPS: 20
+    GAME_STEPS: 20,
+
+    /**
+     * Random seed to use
+     */
+    RANDOM_SEED: 1
 };

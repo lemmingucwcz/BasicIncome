@@ -13,7 +13,7 @@ var CitizenBuilder = (function() {
         buildCitizen: function(isDependent) {
             var res = new CitizenState();
 
-            res.resourcesNeeded = ConstantsConfig.RESOURCES_NEEDED;
+            res.resourcesNeeded = isDependent?ConstantsConfig.RESOURCES_NEEDED_DEPENDENT:ConstantsConfig.RESOURCES_NEEDED;
 
             res.legalJob = ActivityBuilder.buildLegalJobActivity(isDependent);
             res.legalJob.index = 2;

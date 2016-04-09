@@ -35,8 +35,8 @@ var Game = React.createClass(
                 stats.vatIncome += money * state.valueAddedTax / 100.0;
             }
 
-            stats.balance =
-                state.savings + stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
+            stats.stepBalance = stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
+            stats.totalBalance = state.savings + stats.stepBalance;
 
             return stats;
         },
@@ -125,8 +125,9 @@ var Game = React.createClass(
                 Random.seed(ConstantsConfig.RANDOM_SEED);
 
                 for (var i = 0; i < ConstantsConfig.POPULATION_SIZE; i++) {
-                    var isDependent = Random.random() * 100 < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
+                    var isDependent = (Random.random() * 100) < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
 
+                    console.log("isDependent="+isDependent);
                     citizens.push(CitizenBuilder.buildCitizen(isDependent));
                 }
 
@@ -167,7 +168,7 @@ var Game = React.createClass(
             var newState = this.state;
 
             // Check balance
-            if (this.state.nextStepStats.balance < 0) {
+            if (this.state.nextStepStats.totalBalance < 0) {
                 newState.message = "Cannot continue with negative balance";
                 this.setState(newState);
                 return;
@@ -188,7 +189,7 @@ var Game = React.createClass(
                 newState.prevStepStats = Optimizer.optimizePopulation(newState.citizens);
 
                 // Affect savings
-                newState.savings = this.state.nextStepStats.balance;
+                newState.savings = this.state.nextStepStats.totalBalance;
 
                 // Save score
                 var stepScore = Math.round(
@@ -377,8 +378,8 @@ var Game = React.createClass(
                         <div className="value">{this._moneyFmt(this.state.nextStepStats.socialBenefitsExpenses)}</div>
                     </div>
                     <div className="hudElm">
-                        <div className="title">&nbsp;</div>
-                        <div className="value">&nbsp;</div>
+                        <div className="title">Turn balance</div>
+                        <div className="value">{this._balanceFmt(this.state.nextStepStats.stepBalance)}</div>
                     </div>
                     <div className="hudElm">
                         <div className="title">Savings</div>
@@ -386,7 +387,7 @@ var Game = React.createClass(
                     </div>
                     <div className="hudElm">
                         <div className="title">Total balance</div>
-                        <div className="value">{this._balanceFmt(this.state.nextStepStats.balance)}</div>
+                        <div className="value">{this._balanceFmt(this.state.nextStepStats.totalBalance)}</div>
                     </div>
                 </div>
             }

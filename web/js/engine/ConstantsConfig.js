@@ -14,7 +14,7 @@ window.ConstantsConfig = {
      *
      * (0 - not at all, 1 - citizen expects same resources as he earned in previous period)
      */
-    RESOURCES_NEED_SHIFT: 0.5,
+    RESOURCES_NEED_SHIFT: 0.3,
 
     /**
      * Number of citizens
@@ -22,9 +22,14 @@ window.ConstantsConfig = {
     POPULATION_SIZE: 1000,
 
     /**
-     * Initial resources needed by one citizen
+     * Initial resources needed (expected) by one "normal" citizen
      */
-    RESOURCES_NEEDED: 24000/4,
+    RESOURCES_NEEDED: 7500,
+
+    /**
+     * Initial resources needed (expected) by one dependent citizen
+     */
+    RESOURCES_NEEDED_DEPENDENT: 2150,
 
     /**
      * Percentage of dependent persons

@@ -37,7 +37,7 @@ var Cover = React.createClass(
                 // Compute padding to center text vertically (kind of)
                 var padding = (window.innerHeight - 20) / 2;
 
-                return <div className="cover" style={{paddingTop: padding+"px"}}>Comp<strong>U</strong>ting...</div>;
+                return <div className="cover" style={{paddingTop: padding+"px"}}>Computing...</div>;
             }
         }
     }

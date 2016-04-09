@@ -146,7 +146,7 @@ var Game = React.createClass(
                     hiScore: 0,
                     botched: false,
                     finished: false,
-                    message: "Game started",
+                    message: "Modify variables if you wish and click \"Next step\"",
                     savings: 0
                 };
 
@@ -163,21 +163,21 @@ var Game = React.createClass(
         },
 
         nextStep: function () {
+            // New state (should copy...)
+            var newState = this.state;
+
+            // Check balance
+            if (this.state.nextStepStats.balance < 0) {
+                newState.message = "Cannot continue with negative balance";
+                this.setState(newState);
+                return;
+            }
+
             // Show cover
             this.props.getCover().show();
 
             // Start process the way that cover can show
             window.setTimeout(function() {
-                // New state (should copy...)
-                var newState = this.state;
-
-                // Check balance
-                if (this.state.nextStepStats.balance < 0) {
-                    newState.message = "Cannot continue with negative balance";
-                    this.setState(newState);
-                    return;
-                }
-
                 // Set user variables from state
                 UserVariables.incomeTax = this.state.incomeTax * .01;
                 UserVariables.valueAddedTax = this.state.valueAddedTax * .01;
@@ -221,7 +221,7 @@ var Game = React.createClass(
                         newState.finished = true;
                     }
                     else {
-                        newState.message = "New round";
+                        newState.message = "Modify variables if you wish and click \"Next step\"";
                     }
                 }
 

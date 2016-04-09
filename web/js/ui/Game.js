@@ -225,8 +225,10 @@ var Game = React.createClass(
 
                     if (newState.turnNo > ConstantsConfig.GAME_TURNS) {
                         // Record hi-score
-                        newState.hiScore = newState.score;
-                        window.localStorage[this.LOCAL_STORAGE_KEY] = newState.hiScore;
+                        if (newState.score > newState.hiScore) {
+                            newState.hiScore = newState.score;
+                            window.localStorage[this.LOCAL_STORAGE_KEY] = newState.hiScore;
+                        }
                         newState.finished = true;
                     }
                     else {

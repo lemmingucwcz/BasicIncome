@@ -35,50 +35,18 @@ var Game = React.createClass(
                 stats.vatIncome += money * state.valueAddedTax / 100.0;
             }
 
-            stats.balance = state.savings + stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
+            stats.balance =
+                state.savings + stats.incomeTaxIncome + stats.vatIncome - stats.baseIncomeExpenses - stats.socialBenefitsExpenses - state.stateExpenses;
 
             return stats;
         },
 
         getInitialState: function () {
-            var citizens = [];
-
-            // Seed random number generator
-            Random.seed(ConstantsConfig.RANDOM_SEED);
-
-            for (var i = 0; i < ConstantsConfig.POPULATION_SIZE; i++) {
-                var isDependent = Random.random()*100 < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
-
-                citizens.push(CitizenBuilder.buildCitizen(isDependent));
-            }
-
-            var stats = Optimizer.optimizePopulation(citizens);
-
-            var res = {
-                baseIncome: 0,
-                incomeTax: UserVariables.incomeTax * 100,
-                valueAddedTax: UserVariables.valueAddedTax * 100,
-                socialBenefit: UserVariables.socialBenefit,
-                prevStepStats: stats,
-                nextStepStats: null,
-                citizens: citizens,
-                stateExpenses: ConstantsConfig.STATE_EXPENSES_PER_CAPITA * citizens.length,
-                stepNo: 1,
-                score: 0,
-                hiScore: 0,
-                botched: false,
-                finished: false,
-                message: "Game started",
-                savings: 0
+            // Just a state with zero step number
+            return {
+                stepNo: 0,
+                message: "Click \"New game\" to start a game."
             };
-
-            if (window.localStorage[this.LOCAL_STORAGE_KEY] !== undefined) {
-                res.hiScore = parseInt(window.localStorage[this.LOCAL_STORAGE_KEY]);
-            }
-
-            res.nextStepStats = this._computeStats(res);
-
-            return res;
         },
 
         /**
@@ -143,9 +111,47 @@ var Game = React.createClass(
             }
         },
 
-        resetGame: function() {
+        newGame: function () {
             "use strict";
-            this.setState(this.getInitialState());
+
+            var citizens = [];
+
+            // Seed random number generator
+            Random.seed(ConstantsConfig.RANDOM_SEED);
+
+            for (var i = 0; i < ConstantsConfig.POPULATION_SIZE; i++) {
+                var isDependent = Random.random() * 100 < ConstantsConfig.DEPENDENT_PERSON_PERCENTAGE;
+
+                citizens.push(CitizenBuilder.buildCitizen(isDependent));
+            }
+
+            var stats = Optimizer.optimizePopulation(citizens);
+
+            var newState = {
+                baseIncome: 0,
+                incomeTax: UserVariables.incomeTax * 100,
+                valueAddedTax: UserVariables.valueAddedTax * 100,
+                socialBenefit: UserVariables.socialBenefit,
+                prevStepStats: stats,
+                nextStepStats: null,
+                citizens: citizens,
+                stateExpenses: ConstantsConfig.STATE_EXPENSES_PER_CAPITA * citizens.length,
+                stepNo: 1,
+                score: 0,
+                hiScore: 0,
+                botched: false,
+                finished: false,
+                message: "Game started",
+                savings: 0
+            };
+
+            if (window.localStorage[this.LOCAL_STORAGE_KEY] !== undefined) {
+                newState.hiScore = parseInt(window.localStorage[this.LOCAL_STORAGE_KEY]);
+            }
+
+            newState.nextStepStats = this._computeStats(newState);
+
+            this.setState(newState);
         },
 
         nextStep: function () {
@@ -172,7 +178,9 @@ var Game = React.createClass(
             newState.savings = this.state.nextStepStats.balance;
 
             // Save score
-            var stepScore = Math.round((this.state.nextStepStats.baseIncomeExpenses - this.state.nextStepStats.socialBenefitsExpenses + this.state.prevStepStats.satisfactionSum) / this.state.citizens.length);
+            var stepScore = Math.round(
+                (this.state.nextStepStats.baseIncomeExpenses - this.state.nextStepStats.socialBenefitsExpenses + this.state.prevStepStats.satisfactionSum)
+                / this.state.citizens.length);
 
             // Compute next step stats
             newState.nextStepStats = this._computeStats(newState);
@@ -262,67 +270,75 @@ var Game = React.createClass(
         },
 
         render: function () {
-            var prevStepStats = "";
-            if (this.state.prevStepStats != null) {
-                prevStepStats = <div className="hudPart double">
-                    <h2>Statistics</h2>
-                    <div className="hudElm">
-                        <div className="title">Step #</div>
-                        <div className="value">{this.state.stepNo}</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">&nbsp;</div>
-                        <div className="value">&nbsp;</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Legal job avg hrs</div>
-                        <div className="value">{this._hudFmt(this.state.prevStepStats.legalJob.avg())}</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Illegal job avg hrs</div>
-                        <div className="value">{this._hudFmt(this.state.prevStepStats.illegalJob.avg())}</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Comm. work avg hrs</div>
-                        <div className="value">{this._hudFmt(this.state.prevStepStats.communalWork.avg())}</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">House work avg hrs</div>
-                        <div className="value">{this._hudFmt(this.state.prevStepStats.homeWork.avg())}</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Free time avg hrs</div>
-                        <div className="value">{this._hudFmt(this.state.prevStepStats.freeTime.avg())}</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Average satisfaction</div>
-                        <div className="value">{Math.round(
-                            this.state.prevStepStats.satisfactionSum / this.state.citizens.length)}</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Resources fulfillment</div>
-                        <div className="value">{Math.round(this.state.prevStepStats.resourcesFulfilled.avg() * 5)}%</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Under-resourced ctzs</div>
-                        <div className="value">{Math.round(this.state.prevStepStats.belowMinimumResourcesPercent)}%</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Score</div>
-                        <div className="value">{this.state.score}</div>
-                    </div>
-                    <div className="hudElm">
-                        <div className="title">Hi-score</div>
-                        <div className="value">{this.state.hiScore}</div>
-                    </div>
-                </div>;
+            var statsContents = "";
+
+            if (this.state.stepNo > 0) {
+                statsContents =
+                    <div>
+                        <div className="hudElm">
+                            <div className="title">Step #</div>
+                            <div className="value">{this.state.stepNo}</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">&nbsp;</div>
+                            <div className="value">&nbsp;</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Legal job avg hrs</div>
+                            <div className="value">{this._hudFmt(this.state.prevStepStats.legalJob.avg())}</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Illegal job avg hrs</div>
+                            <div className="value">{this._hudFmt(this.state.prevStepStats.illegalJob.avg())}</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Comm. work avg hrs</div>
+                            <div className="value">{this._hudFmt(this.state.prevStepStats.communalWork.avg())}</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">House work avg hrs</div>
+                            <div className="value">{this._hudFmt(this.state.prevStepStats.homeWork.avg())}</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Free time avg hrs</div>
+                            <div className="value">{this._hudFmt(this.state.prevStepStats.freeTime.avg())}</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Average satisfaction</div>
+                            <div className="value">{Math.round(
+                                this.state.prevStepStats.satisfactionSum / this.state.citizens.length)}</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Resources fulfillment</div>
+                            <div className="value">{Math.round(this.state.prevStepStats.resourcesFulfilled.avg() * 5)}%</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Under-resourced ctzs</div>
+                            <div className="value">{Math.round(this.state.prevStepStats.belowMinimumResourcesPercent)}%</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Score</div>
+                            <div className="value">{this.state.score}</div>
+                        </div>
+                        <div className="hudElm">
+                            <div className="title">Hi-score</div>
+                            <div className="value">{this.state.hiScore}</div>
+                        </div>
+                    </div>;
             }
 
-            var nextStepStats = "";
-            if (this.state.nextStepStats != null) {
-                nextStepStats = <div className="hudPart double">
-                    <h2>Budget</h2>
+            prevStepStats =
+                <div className="hudPart double">
+                    <h2>Statistics</h2>
 
+                    {statsContents}
+                </div>
+            ;
+
+            var budgetContents = "";
+
+            if (this.state.stepNo > 0) {
+                budgetContents = <div>
                     <div className="hudElm">
                         <div className="title">Income tax income</div>
                         <div className="value">{this._moneyFmt(this.state.nextStepStats.incomeTaxIncome)}</div>
@@ -355,18 +371,19 @@ var Game = React.createClass(
                         <div className="title">Total balance</div>
                         <div className="value">{this._balanceFmt(this.state.nextStepStats.balance)}</div>
                     </div>
-                </div>;
+                </div>
             }
 
-            return <div>
-                {prevStepStats}
-                <div className="hudPart single">
-                    <h2>Controls</h2>
+            nextStepStats = <div className="hudPart double">
+                <h2>Budget</h2>
 
-                    <a className="hudElm" tabIndex="1" onClick={this.reset}>
-                        New game
-                    </a>
+                {budgetContents}
+            </div>;
 
+            var controls = "";
+
+            if (this.state.stepNo > 0) {
+                controls = <div>
                     <div className="hudElm">
                         <div className="title">Social benefit</div>
                         <div className="value"><input tabIndex="1" type="text" value={this.state.socialBenefit}
@@ -390,6 +407,19 @@ var Game = React.createClass(
                     <a className="hudElm" tabIndex="1" onClick={this.nextStep}>
                         Next step
                     </a>
+                </div>;
+            }
+
+            return <div>
+                {prevStepStats}
+                <div className="hudPart single">
+                    <h2>Controls</h2>
+
+                    <a className="hudElm" tabIndex="1" onClick={this.newGame}>
+                        New game
+                    </a>
+
+                    {controls}
                 </div>
 
                 <div style={{float: "left"}}>
@@ -403,7 +433,8 @@ var Game = React.createClass(
                         </div>
                     </div>
                 </div>
-            </div>;
+            </div>
+                ;
         }
     }
 );

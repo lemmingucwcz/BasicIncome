@@ -293,7 +293,7 @@ var Game = React.createClass(
                 statsContents =
                     <div>
                         <div className="hudElm">
-                            <div className="title">Step #</div>
+                            <div className="title">Turn #</div>
                             <div className="value">{this.state.stepNo}</div>
                         </div>
                         <div className="hudElm">

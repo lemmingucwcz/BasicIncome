@@ -50,9 +50,9 @@ var Application = React.createClass(
             return <div>
                 {cover}
                 <div className="menu">
-                    <a href="mechanics.html" target="_blank" className="rightLink">Explanation of simulation mechanics</a>
+                    <a href="help.html" target="_blank" className="rightLink">How does it work (help)</a>
                     <a href="https://github.com/lemmingucwcz/BasicIncome" target="_blank" className="rightLink">GitHub</a>
-                    <a href="#" className={this._getButtonClasses(this.NAVIGATION_GAME)} onClick={this.goToNavigation.bind(this, this.NAVIGATION_GAME)}>Simulation</a>
+                    <a href="#" className={this._getButtonClasses(this.NAVIGATION_GAME)} onClick={this.goToNavigation.bind(this, this.NAVIGATION_GAME)}>Sim/Game</a>
                     <a href="#" className={this._getButtonClasses(this.NAVIGATION_FUNCTION_DESIGNER)}
                        onClick={this.goToNavigation.bind(this, this.NAVIGATION_FUNCTION_DESIGNER)}>Designer</a>
                     <a href="#" className={this._getButtonClasses(this.NAVIGATION_CONFIGURATION)} onClick={this.goToNavigation.bind(this, this.NAVIGATION_CONFIGURATION)}>Configuration</a>

@@ -143,6 +143,18 @@ a.hudElm:hover {
     padding-left: 10px;
 }
 
+.cover {
+    font-size: 500%;
+    color: white;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+
 .document {
     max-width: 1200px;
 }
@@ -158,6 +170,12 @@ a.hudElm:hover {
     border-bottom: 1px solid white;
 }
 
+.document h3 {
+    padding: 0 40px;
+    margin: 40px 0 30px;
+    border-bottom: 1px solid white;
+}
+
 .document p {
     padding: 0 40px;
 }
@@ -169,16 +187,4 @@ a.hudElm:hover {
 .document img {
     border: 20px solid white;
     margin: 20px 40px;
-}
-
-.cover {
-    font-size: 500%;
-    color: white;
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.5);
 }

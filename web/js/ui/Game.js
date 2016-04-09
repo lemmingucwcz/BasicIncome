@@ -72,9 +72,8 @@ var Game = React.createClass(
                 savings: 0
             };
 
-
-            if (localStorage[this.LOCAL_STORAGE_KEY] !== undefined) {
-                stats.hiScore = parseInt(localStorage[this.LOCAL_STORAGE_KEY]);
+            if (window.localStorage[this.LOCAL_STORAGE_KEY] !== undefined) {
+                res.hiScore = parseInt(window.localStorage[this.LOCAL_STORAGE_KEY]);
             }
 
             res.nextStepStats = this._computeStats(res);
@@ -197,6 +196,7 @@ var Game = React.createClass(
                 if (newState.stepNo == ConstantsConfig.GAME_STEPS) {
                     // Record hi-score
                     newState.hiScore = newState.score;
+                    window.localStorage[this.LOCAL_STORAGE_KEY] = newState.hiScore;
                     newState.finished = true;
                 }
                 else {

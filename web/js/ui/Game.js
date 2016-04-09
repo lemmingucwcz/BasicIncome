@@ -162,14 +162,14 @@ var Game = React.createClass(
             UserVariables.baseIncome = this.state.baseIncome;
             UserVariables.socialBenefit = this.state.socialBenefit;
 
-            // Save score
-            var stepScore = Math.round((this.state.nextStepStats.baseIncomeExpenses - this.state.nextStepStats.socialBenefitsExpenses)/1000);
-
             // Optimize population
             newState.prevStepStats = Optimizer.optimizePopulation(newState.citizens);
 
             // Affect savings
             newState.savings = this.state.nextStepStats.balance;
+
+            // Save score
+            var stepScore = Math.round((this.state.nextStepStats.baseIncomeExpenses - this.state.nextStepStats.socialBenefitsExpenses + this.state.prevStepStats.satisfactionSum) / this.state.citizens.length);
 
             // Compute next step stats
             newState.nextStepStats = this._computeStats(newState);

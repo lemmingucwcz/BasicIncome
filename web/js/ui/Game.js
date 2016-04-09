@@ -146,7 +146,7 @@ var Game = React.createClass(
                     hiScore: 0,
                     botched: false,
                     finished: false,
-                    message: "Modify variables if you wish and click \"Next step\"",
+                    message: "Modify variables if you wish and click \"Next turn\"",
                     savings: 0
                 };
 
@@ -221,7 +221,7 @@ var Game = React.createClass(
                         newState.finished = true;
                     }
                     else {
-                        newState.message = "Modify variables if you wish and click \"Next step\"";
+                        newState.message = "Modify variables if you wish and click \"Next turn\"";
                     }
                 }
 
@@ -422,7 +422,7 @@ var Game = React.createClass(
                                                       onChange={this.changeValueAddedTax}/></div>
                     </div>
                     <a className="hudElm" tabIndex="1" onClick={this.nextStep}>
-                        Next step
+                        Next turn
                     </a>
                 </div>;
             }

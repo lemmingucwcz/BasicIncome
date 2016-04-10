@@ -46,10 +46,10 @@ var FunctionConfig = {
         name: "Illegal job satisfaction",
         description: "Satisfaction earned from illegal job each hour",
         args: "X is working hours per week",
-        fn: "-1.4-x/40",
+        fn: "-1.6-x/60",
         min: 0,
-        max: 10,
-        scaleVariation: 0.2,
+        max: 40,
+        scaleVariation: 0.5,
         offsetVariation: 0.2,
         dependentScaleRatio: 1
     },

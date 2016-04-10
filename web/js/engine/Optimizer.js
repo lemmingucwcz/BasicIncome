@@ -81,7 +81,9 @@ var Optimizer = (function() {
                 communalWork: new HistogramData(40),
                 homeWork: new HistogramData(15),
                 freeTime: new HistogramData(7*16),
-                resourcesFulfilled: new HistogramData(300, 5),
+                resourcesFulfilled: new HistogramData(300, 0, 5),
+                satisfaction: new HistogramData(1000, -1000, 50),
+                underResourced: new HistogramData(150, 0, 5),
                 satisfactionSum: 0,
                 belowMinimumResourcesPercent: 0
             }
@@ -92,7 +94,6 @@ var Optimizer = (function() {
                 Optimizer.optimizeState(citizen);
 
                 // Alter stats
-                console.log("Satisfaction="+citizen.satisfactionResult.satisfaction);
                 stats.satisfactionSum += citizen.satisfactionResult.satisfaction;
                 stats.legalJob.add(citizen.legalJob.states[citizen.legalJob.index].hours);
                 stats.illegalJob.add(citizen.illegalJob.states[citizen.illegalJob.index].hours);
@@ -109,6 +110,18 @@ var Optimizer = (function() {
                 // Check if resources are below minimum
                 if (citizen.satisfactionResult.resources < ConstantsConfig.MINIMUM_RESOURCES_NEEDED) {
                     belowMinimumResourcesCnt++;
+                }
+
+                // Add satisfaction to histogram (with boundaries)
+                var sat = citizen.satisfactionResult.satisfaction;
+                sat = Math.max(sat, -1000);
+                sat = Math.min(sat, 999);
+                stats.satisfaction.add(sat);
+
+                // Add under-resourced citizen
+                var minimumPercent = citizen.satisfactionResult.resources*100 / ConstantsConfig.MINIMUM_RESOURCES_NEEDED;
+                if (minimumPercent < 150) {
+                    stats.underResourced.add(minimumPercent);
                 }
             }
 

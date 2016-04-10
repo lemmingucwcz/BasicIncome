@@ -27,11 +27,12 @@ var HistogramChart = React.createClass(
 
             var histogramData = this.props.getData(this.state.chartId);
             var factor = histogramData.getFactor();
+            var offset = histogramData.getOffset()
 
             // Create labels
             var labels = [];
             for (var i = 0; i < histogramData.getData().length; i++) {
-                labels.push(i * factor);
+                labels.push(i * factor + offset);
             }
 
             return {

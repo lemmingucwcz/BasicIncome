@@ -37,7 +37,7 @@ var FunctionDesigner = React.createClass(
             newState.fn.max = newMax;
 
             // Parse scale variation
-            if (this.refs.scaleVariation !== undefined) {
+            if (this.state.fn.scaleVariation !== undefined) {
                 var newScaleVariation = parseFloat(this.refs.scaleVariation.getDOMNode().value);
                 if (isNaN(newScaleVariation)) {
                     newState.error = "Invalid scale variation";
@@ -47,7 +47,7 @@ var FunctionDesigner = React.createClass(
             }
 
             // Parse offset variation
-            if (this.refs.offsetVariation !== undefined) {
+            if (this.state.fn.offsetVariation !== undefined) {
                 var newOffsetVariation = parseFloat(this.refs.offsetVariation.getDOMNode().value);
                 if (isNaN(newOffsetVariation)) {
                     newState.error = "Invalid offset variation";
@@ -57,7 +57,7 @@ var FunctionDesigner = React.createClass(
             }
 
             // Parse dependent scale variation
-            if (this.refs.dependentScaleRatio !== undefined) {
+            if (this.state.fn.dependentScaleRatio !== undefined) {
                 var newDependentScaleRatio = parseFloat(this.refs.dependentScaleRatio.getDOMNode().value);
                 if (isNaN(newDependentScaleRatio)) {
                     newState.error = "Invalid dependent scale ratio";

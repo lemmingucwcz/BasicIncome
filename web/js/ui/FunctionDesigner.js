@@ -91,6 +91,21 @@ var FunctionDesigner = React.createClass(
         },
 
         /**
+         * Make deep copy of an object
+         *
+         * @param object Object
+         *
+         * @return Deep copy of the object
+         *
+         * @private
+         */
+        _deepCopy: function(obj) {
+            "use strict";
+
+            return JSON.parse(JSON.stringify(obj));
+        },
+
+        /**
          * Called when a function is selected
          */
         functionSelected: function (e) {
@@ -100,7 +115,7 @@ var FunctionDesigner = React.createClass(
             };
 
             if (newState.selectedId != null) {
-                newState.fn = FunctionConfig[newState.selectedId];
+                newState.fn = this._deepCopy(FunctionConfig[newState.selectedId]);
                 newState.originalFn = newState.fn.fn;
 
                 if (this.refs.min != null) {
@@ -130,7 +145,7 @@ var FunctionDesigner = React.createClass(
 
             if (this.state.error.length == 0) {
                 // No error - save
-                FunctionConfig[this.state.selectedId].fn = this.state.fn.fn;
+                FunctionConfig[this.state.selectedId] = this._deepCopy(this.state.fn);
 
                 // Mark new function as original
                 this.state.originalFn = this.state.fn.fn;

@@ -43,7 +43,7 @@ var FunctionDesigner = React.createClass(
                     newState.error = "Invalid scale variation";
                     return newState;
                 }
-                newState.scaleVariation = newScaleVariation;
+                newState.fn.scaleVariation = newScaleVariation;
             }
 
             // Parse offset variation
@@ -53,7 +53,7 @@ var FunctionDesigner = React.createClass(
                     newState.error = "Invalid offset variation";
                     return newState;
                 }
-                newState.offsetVariation = newOffsetVariation;
+                newState.fn.offsetVariation = newOffsetVariation;
             }
 
             // Parse dependent scale variation
@@ -63,7 +63,7 @@ var FunctionDesigner = React.createClass(
                     newState.error = "Invalid dependent scale ratio";
                     return newState;
                 }
-                newState.dependentScaleRatio = newDependentScaleRatio;
+                newState.fn.dependentScaleRatio = newDependentScaleRatio;
             }
 
             // Parse function

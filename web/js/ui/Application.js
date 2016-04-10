@@ -58,6 +58,8 @@ var Application = React.createClass(
                     <a href="#" className={this._getButtonClasses(this.NAVIGATION_CONFIGURATION)} onClick={this.goToNavigation.bind(this, this.NAVIGATION_CONFIGURATION)}>Configuration</a>
                 </div>
                 <div className="content">{content}</div>
+
+                <br style={{clear: "both"}} />
             </div>;
         }
     }

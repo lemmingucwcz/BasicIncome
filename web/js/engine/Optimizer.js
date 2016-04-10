@@ -81,7 +81,7 @@ var Optimizer = (function() {
                 communalWork: new HistogramData(40),
                 homeWork: new HistogramData(15),
                 freeTime: new HistogramData(7*16),
-                resourcesFulfilled: new HistogramData(60),
+                resourcesFulfilled: new HistogramData(300, 5),
                 satisfactionSum: 0,
                 belowMinimumResourcesPercent: 0
             }
@@ -100,7 +100,7 @@ var Optimizer = (function() {
                 stats.homeWork.add(citizen.homeWork.states[citizen.homeWork.index].hours);
                 stats.freeTime.add(citizen.freeTime.states[citizen.freeTime.index].hours);
 
-                var resourcesPercentage = Math.round((citizen.satisfactionResult.resources - citizen.resourcesNeeded)*20/citizen.resourcesNeeded) + 20;
+                var resourcesPercentage = Math.round((citizen.satisfactionResult.resources - citizen.resourcesNeeded)*100/citizen.resourcesNeeded) + 100;
                 stats.resourcesFulfilled.add(resourcesPercentage);
 
                 // Shift citizen resource need

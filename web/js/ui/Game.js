@@ -297,12 +297,41 @@ var Game = React.createClass(
             return ((value < 0) ? "" : "+") + this._moneyFmt(value);
         },
 
+        /**
+         * Get histogram data for given chart id
+         *
+         * @param chartId Chart id
+         * @private
+         */
+        _getHistogramData: function(chartId) {
+            "use strict";
+
+            return this.state.prevTurnStats[chartId];
+        },
+
+        /**
+         * Render HUD element for previous step statistics
+         *
+         * @param id ID of the chart
+         * @param label Label of the chart
+         * @param postfix Postfix after the value
+         * @private
+         */
+        _renderStatsHudElm: function(id, label, postfix) {
+            "use strict";
+
+            return <div className="hudElm clickable" onClick={function() { this.refs.histogramChart.showChart(id, label)}.bind(this)}>
+                <div className="title">{label}</div>
+                <div className="value">{this._hudFmt(this.state.prevTurnStats[id].avg())}{postfix}</div>
+            </div>
+        },
+
         render: function () {
             var statsContents = "";
 
             if (this.state.turnNo > 0) {
                 statsContents =
-                    <div>
+                    <div style={{ margin: "0 auto"}}>
                         <div className="hudElm">
                             <div className="title">Turn #</div>
                             <div className="value">{this.state.turnNo}</div>
@@ -311,35 +340,17 @@ var Game = React.createClass(
                             <div className="title">&nbsp;</div>
                             <div className="value">&nbsp;</div>
                         </div>
-                        <div className="hudElm">
-                            <div className="title">Legal job avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevTurnStats.legalJob.avg())}</div>
-                        </div>
-                        <div className="hudElm">
-                            <div className="title">Illegal job avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevTurnStats.illegalJob.avg())}</div>
-                        </div>
-                        <div className="hudElm">
-                            <div className="title">Comm. work avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevTurnStats.communalWork.avg())}</div>
-                        </div>
-                        <div className="hudElm">
-                            <div className="title">House work avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevTurnStats.homeWork.avg())}</div>
-                        </div>
-                        <div className="hudElm">
-                            <div className="title">Free time avg hrs</div>
-                            <div className="value">{this._hudFmt(this.state.prevTurnStats.freeTime.avg())}</div>
-                        </div>
+                        {this._renderStatsHudElm("legalJob", "Legal job avg hrs")}
+                        {this._renderStatsHudElm("illegalJob", "Illegal job avg hrs")}
+                        {this._renderStatsHudElm("communalWork", "Comm. work avg hrs")}
+                        {this._renderStatsHudElm("homeWork", "House work avg hrs")}
+                        {this._renderStatsHudElm("freeTime", "Free time avg hrs")}
                         <div className="hudElm">
                             <div className="title">Average satisfaction</div>
                             <div className="value">{Math.round(
                                 this.state.prevTurnStats.satisfactionSum / this.state.citizens.length)}</div>
                         </div>
-                        <div className="hudElm">
-                            <div className="title">Resources fulfillment</div>
-                            <div className="value">{Math.round(this.state.prevTurnStats.resourcesFulfilled.avg() * 5)}%</div>
-                        </div>
+                        {this._renderStatsHudElm("resourcesFulfilled", "Resources fulfillment", "%")}
                         <div className="hudElm">
                             <div className="title">Under-resourced ctzs</div>
                             <div className="value">{Math.round(this.state.prevTurnStats.belowMinimumResourcesPercent)}%</div>
@@ -461,6 +472,8 @@ var Game = React.createClass(
                         </div>
                     </div>
                 </div>
+
+                <HistogramChart ref="histogramChart" getData={this._getHistogramData} id="histogramChart" width="1200" height="300" />
             </div>
                 ;
         }

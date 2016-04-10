@@ -174,7 +174,7 @@ a.hudElm:hover {
 }
 
 .histogramChart .background {
-    opacity: 0.2;
+    opacity: 0.4;
     position: fixed;
     top: 0;
     right: 0;

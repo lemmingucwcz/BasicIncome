@@ -124,7 +124,7 @@ var FunctionConfig = {
         name: "Resources difference satisfaction",
         description: "Satisfaction earned by surplus or missing resources",
         args: "X is how many resources are surplus (negative numbers means resources are missing)",
-        fn: "200*(Math.log(x+10000)-Math.log(1000))",
+        fn: "200*(Math.log(x+10000)-Math.log(10000))",
         min: -5000,
         max: 5000
     },

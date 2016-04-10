@@ -4,3 +4,8 @@ What is basic income: https://en.wikipedia.org/wiki/Basic_income
 
 Play the game online: http://www.basicincome.michalkara.com
 
+Application is written in Javascript so that everyone can run it easily in a browser. Also I can just give you URL to test it
+and yet you are not using up my CPU resources for game computations :)
+
+React was used to create the UI. This is my first app in React - I use this app to get familiar with the technology - so the
+architecture is not as clean as it should be. Sorry.

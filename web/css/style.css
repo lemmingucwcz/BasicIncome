@@ -196,6 +196,18 @@ a.hudElm:hover {
     font-size: 200%;
 }
 
+.histogramChart .yAxisLabel {
+    font-size: 80%;
+    color: #ccc;
+}
+
+.histogramChart .xAxisLabel {
+    font-size: 80%;
+    text-align: center;
+    margin-top: 3px;
+    color: #ccc;
+}
+
 .histogramChart .chartWrapper {
     background: black;
     padding: 30px;

@@ -78,14 +78,16 @@ var HistogramChart = React.createClass(
                     var ctx = document.getElementById(this.props.id).getContext("2d");
                     this.chart =
                         new Chart(ctx).Bar(this._getChartData(),
-                                           {animation: false, scaleGridLineColor: "rgba(220,220,220,.2)"});
+                                           {animation: false });
                 }.bind(this), 1);
 
                 return <div className="histogramChart" onClick={this.close}>
                     <div className="background"></div>
                     <div className="chartWrapper" style={{width: (parseInt(this.props.width)+60)+"px"}}>
                         <div className="chartLabel">{this.state.chartLabel}</div>
+                        <div className="yAxisLabel">Citizen count</div>
                         <canvas id={this.props.id} width={this.props.width} height={this.props.height}></canvas>
+                        <div className="xAxisLabel">{this.state.axisLabel}</div>
                     </div>
                 </div>;
             }
@@ -97,12 +99,13 @@ var HistogramChart = React.createClass(
          * @param chartId Chart id - will be passed to this.props.getData()
          * @param chartLabel Label of the chart
          */
-        showChart: function (chartId, chartLabel) {
+        showChart: function (chartId, chartLabel, axisLabel) {
             "use strict";
 
             this.setState({
                               chartId: chartId,
-                              chartLabel: chartLabel
+                              chartLabel: chartLabel,
+                              axisLabel: axisLabel
                           });
         }
     }

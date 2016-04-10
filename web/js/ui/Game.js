@@ -319,7 +319,7 @@ var Game = React.createClass(
          * @param forceValue Do not take value as average but use this ine
          * @private
          */
-        _renderStatsHudElm: function(id, elmLabel, chartLabel, valuePostfix, forceValue) {
+        _renderStatsHudElm: function(id, elmLabel, chartLabel, axisLabel, valuePostfix, forceValue) {
             "use strict";
 
             var value;
@@ -330,7 +330,7 @@ var Game = React.createClass(
                 value = this._hudFmt(this.state.prevTurnStats[id].avg());
             }
 
-            return <div className="hudElm clickable" onClick={function() { this.refs.histogramChart.showChart(id, chartLabel)}.bind(this)}>
+            return <div className="hudElm clickable" onClick={function() { this.refs.histogramChart.showChart(id, chartLabel, axisLabel)}.bind(this)}>
                 <div className="title">{elmLabel}</div>
                 <div className="value">{value}{valuePostfix}</div>
             </div>
@@ -350,16 +350,17 @@ var Game = React.createClass(
                             <div className="title">&nbsp;</div>
                             <div className="value">&nbsp;</div>
                         </div>
-                        {this._renderStatsHudElm("legalJob", "Legal job avg hrs", "Hours in legal job histogram")}
-                        {this._renderStatsHudElm("illegalJob", "Illegal job avg hrs", "Hours in illegal job histogram")}
-                        {this._renderStatsHudElm("communalWork", "Comm. work avg hrs", "Hours working for community histogram")}
-                        {this._renderStatsHudElm("homeWork", "House work avg hrs", "Hours working on own household histogram")}
-                        {this._renderStatsHudElm("freeTime", "Free time avg hrs", "Hours of free time histogram")}
-                        {this._renderStatsHudElm("satisfaction", "Average satisfaction", "Satisfaction histogram", "",
+                        {this._renderStatsHudElm("legalJob", "Legal job avg hrs", "Hours in legal job", "Hours in legal job")}
+                        {this._renderStatsHudElm("illegalJob", "Illegal job avg hrs", "Hours in illegal job", "Hours in illegal job")}
+                        {this._renderStatsHudElm("communalWork", "Comm. work avg hrs", "Hours working for community", "Hours working for community")}
+                        {this._renderStatsHudElm("homeWork", "House work avg hrs", "Hours working on own household", "Hours working on own household")}
+                        {this._renderStatsHudElm("freeTime", "Free time avg hrs", "Hours of free time", "Hours of free time")}
+                        {this._renderStatsHudElm("satisfaction", "Average satisfaction", "Satisfaction", "Satisfaction", "",
                                                  Math.round(this.state.prevTurnStats.satisfactionSum / this.state.citizens.length))}
-                        {this._renderStatsHudElm("resourcesFulfilled", "Resources fulfillment", "Resources fulfillment histogram", "%")}
+                        {this._renderStatsHudElm("resourcesFulfilled", "Resources fulfillment", "Resources fulfillment", "Resources fulfillment", "%")}
                         {this._renderStatsHudElm("underResourced", "Under-resourced ctzs", "Histogram of under-resourced and nearly under-resourced citizens",
-                                                 "%", Math.round(this.state.prevTurnStats.belowMinimumResourcesPercent))}
+                                                 "Resources relative to minimum living resources [%]", "%",
+                                                 Math.round(this.state.prevTurnStats.belowMinimumResourcesPercent))}
                         <div className="hudElm">
                             <div className="title">Score</div>
                             <div className="value">{this.state.score}</div>
